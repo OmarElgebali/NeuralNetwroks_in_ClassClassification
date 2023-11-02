@@ -1,14 +1,24 @@
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
-csv_file_path = 'cropped_file_P.csv'
+# Read the CSV file into a DataFrame
+file_path = 'path/to/your/csv_file.csv'
+df = pd.read_csv(file_path)
 
-df = pd.read_csv(csv_file_path)
+# Split the data for the first class (first 50 rows)
+class1_data = df.iloc[:50, :]
 
-# Extract the first two columns and the last column
-selected_columns = df.iloc[:, [0, 1, -1]]
+# Split the data for the second class (next 50 rows)
+class2_data = df.iloc[50:, :]
 
-# Save the selected columns to a new CSV file
-output_csv_file_path = 'selected_columns.csv'
-selected_columns.to_csv(output_csv_file_path, index=False)
+# Split the data for each class into train (25 rows) and test (25 rows) sets
+class1_train, class1_test = train_test_split(class1_data, test_size=0.5, random_state=42)
+class2_train, class2_test = train_test_split(class2_data, test_size=0.5, random_state=42)
 
+# Concatenate the balanced train and test sets for both classes
+train_data = pd.concat([class1_train, class2_train])
+test_data = pd.concat([class1_test, class2_test])
 
+# Print the shapes of train and test sets for verification
+print("Train Data Shape:", train_data.shape)
+print("Test Data Shape:", test_data.shape)
