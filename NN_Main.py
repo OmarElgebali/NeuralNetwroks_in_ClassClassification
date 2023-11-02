@@ -1,15 +1,31 @@
-# This is a sample Python script.
+import tkinter as tk
+from tkinter import W
+from tkinter import *
+import Perceptron as pr
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+main = tk.Tk()
+boxs = tk.Listbox(main)
+boxs.pack()
+boxs.insert(0, 'Area')
+boxs.insert(1, 'Perimeter')
+boxs.insert(2, 'MajorAxisLength')
+boxs.insert(3, 'MinorAxisLength')
+boxs.insert(4, 'roundnes')
+radio = tk.IntVar()
+tk.Radiobutton(main, text="C1 & C2", variable=radio, value=1).pack()
+tk.Radiobutton(main, text="C1 & C2", variable=radio, value=2).pack()
+tk.Radiobutton(main, text="C3 & C2", variable=radio, value=3).pack()
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+tk.Label(main, text='Learning Rate').pack()
+LearningRate = tk.Entry(main)
+LearningRate.pack()
 
+tk.Label(main, text='Epochs').pack()
+Epochs = tk.Entry(main)
+Epochs.pack()
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+button = tk.Button(main, text="Perceptron", width=10, height=3, command=pr.takePara())
+button.pack()
+main.title('Perceptorn & Adaline')
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+main.mainloop()
