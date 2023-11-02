@@ -17,8 +17,7 @@ class Adaline:
         self.weights = []
         self.y_hats = np.zeros(len(labels))
         self.errors = np.zeros(len(labels))
-        self.label_test = []
-        self.y_hat_test = []
+        self.y_actual = []
         self.Xs = self.calcXs(feature1_train, feature2_train)
         self.calcWeights()
 
@@ -68,21 +67,18 @@ class Adaline:
         else:
             return 0
 
-    def test(self, feature1_test, feature2_test, label_test):
+    def test(self, feature1_test, feature2_test, y_actual):
+        y_hat_test = []
         Xs = self.calcXs(feature1_test, feature2_test)
         for x in Xs:
             dot_product = np.dot(np.transpose(self.weights), x)
-            # Append 1 if the dot product is greater than 0, else append 0
             if dot_product > 0:
-                self.y_hat_test.append(1)
+                y_hat_test.append(1)
             else:
-                self.y_hat_test.append(0)
+                y_hat_test.append(0)
 
-        self.label_test = label_test
-        print("y_true, y_predict")
-        for lblTst, yhat_test in zip(label_test, self.y_hat_test):
-            print("real ", lblTst)
-            print("predict ", yhat_test)
+        self.y_actual = y_actual
+        return y_hat_test
 
 
 #############
@@ -101,14 +97,6 @@ x_2_scaled = minMax[1].fit_transform(x_2)
 adaline = Adaline(x_1_scaled, x_2_scaled, y_bin, 1, 1000, .1, .01)
 adaline.fit()
 
-"""
-Xs = 
-[
-
-
-
-]
-"""
 feature1 = [295.4698306,
             274.8633573,
             313.570417,
