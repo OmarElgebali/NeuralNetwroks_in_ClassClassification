@@ -4,41 +4,31 @@ from tkinter import W
 from tkinter import *
 import numpy as np
 import pandas as pd
-from NN_Main import boxs, radio, LearningRate, Epochs
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import MinMaxScaler
 
-def takePara():
-def readFile():
+
+def readFile(radio):
     df = pd.read_csv('Dry_Bean_Dataset.csv')
-    if radio.get() == 1:
+    if radio == 1:
         select_row = df.iloc[0:101]
-    if radio.get() == 2:
+    if radio == 2:
         select_row = pd.concat(df.iloc[0:51], df.iloc[100:151])
-    elif radio.get() == 3:
+    elif radio == 3:
         select_row = df.iloc[50:151]
     return select_row
 
 
 # feature1, feature2 = boxs.get(boxs.curselection())
-selected_indices = boxs.curselection()
 
-feature1 = boxs.get(selected_indices[0])
-feature2 = boxs.get(selected_indices[1])
-
-
-def getfeature(feat1, feat2):
-    columns = readFile()
+def getfeature(feat1, feat2, col):
     le = LabelEncoder()
-    label = le.fit_transform(columns['Class'])
+    label = le.fit_transform(col['Class'])
     label = [i if i != 0 else -1 for i in label]
-    feature = columns[[feat1, feat2]]
-    label = columns['Class']
+    feature = col[[feat1, feat2]]
+    label = col['Class']
     return feature, label
-
-
-features, target_class = getfeature(feature1, feature2)
 
 
 def train_test(feature, label):
@@ -50,8 +40,6 @@ def train_test(feature, label):
     return feature1_train, feature2_train, feature1_test, feature2_test
 
 
-trainfeat1, trainfeat2, testfeat1, testfeat2 = train_test()
-
 
 def preprocessing(trainf1, trainf2, testf1, testf2):
     scaler = MinMaxScaler(feature_range=(-1, 1))
@@ -61,13 +49,6 @@ def preprocessing(trainf1, trainf2, testf1, testf2):
     normF2_test = scaler.fit_transform(np.array(testf2).reshape(-1, 1))
 
     return normF1_train, normF2_train, normF1_test, normF2_test
-
-
-normfeat1_train, normfeat2_train, normfeat1_test, normfeat2_test = preprocessing(trainfeat1, trainfeat2, testfeat1,
-                                                                                 testfeat2)
-
-learning_rate = float(LearningRate.get())
-epoc = int(Epochs.get())
 
 
 def perceptron_train(feat1Train, feat2train, T_class, learning, epoch):
@@ -92,8 +73,28 @@ def perceptron_train(feat1Train, feat2train, T_class, learning, epoch):
             w2 = w2 + learning * error * float(x2)
         if errorCute == 0:
             break
-
+    print(w0, w1, w2)
     return w0, w1, w2
+
+
+def big():
+    boxs1 = str(var.get())
+    boxs2 = str(var1.get())
+    radioo = int(radio.get())
+    Learning_Rate = float(LearningRate.get())
+    Epochss = int(Epochs.get())
+
+    columns = readFile(radioo)
+    feature1 = boxs1
+    feature2 = boxs2
+    features, target_class = getfeature(feature1, feature2, columns)
+    trainfeat1, trainfeat2, testfeat1, testfeat2 = train_test(features, target_class)
+    normfeat1_train, normfeat2_train, normfeat1_test, normfeat2_test = preprocessing(trainfeat1, trainfeat2, testfeat1, testfeat2)
+    learning_rate = Learning_Rate
+    epoc = Epochss
+    w0, w1, w2 = perceptron_train(normfeat1_train, normfeat2_train, target_class, learning_rate, epoc)
+    print(w0, w1, w2)
+
 
 # w0, w1, w2 = perceptron(normF1_train, normF2_train, y_train, 0.5)
 # print(w0, w1, w2)
@@ -114,6 +115,55 @@ def perceptron_train(feat1Train, feat2train, T_class, learning, epoch):
 #
 #
 # Bigteste()
-# w0, w1, w2 = perceptron(normfeat1_train, normfeat2_train, target_class, learning_rate, epoc)
 #
 # print("W0", w0, "W1", w1, "W2", w2)
+import tkinter as tk
+main = tk.Tk()
+main.title('Perceptorn & Adaline')
+# boxs = tk.Listbox(main)
+# boxs.pack()
+# boxs.insert(0, 'Area')
+# boxs.insert(1, 'Perimeter')
+# boxs.insert(2, 'MajorAxisLength')
+# boxs.insert(3, 'MinorAxisLength')
+# boxs.insert(4, 'roundnes')
+# box = tk.Listbox(main)
+# box.pack()
+# box.insert(0, 'Area')
+# box.insert(1, 'Perimeter')
+# box.insert(2, 'MajorAxisLength')
+# box.insert(3, 'MinorAxisLength')
+# box.insert(4, 'roundnes')
+
+radio = tk.IntVar()
+tk.Radiobutton(main, text="C1 & C2", variable=radio, value=1).pack()
+tk.Radiobutton(main, text="C1 & C2", variable=radio, value=2).pack()
+tk.Radiobutton(main, text="C3 & C2", variable=radio, value=3).pack()
+
+tk.Label(main, text='Learning Rate').pack()
+LearningRate = tk.Entry(main)
+LearningRate.pack()
+
+options = ['Area', 'Perimeter', 'MajorAxisLength', 'MinorAxisLength', 'roundnes']
+
+
+var = tk.StringVar()
+cb = tk.Checkbutton(main, text=options[0], variable=var, offvalue="")
+cb.deselect()
+cb.pack()
+
+var1 = tk.StringVar()
+cb1 = tk.Checkbutton(main, text=options[1], variable=var1, offvalue="")
+cb1.deselect()
+cb1.pack()
+
+tk.Label(main, text='Epochs').pack()
+Epochs = tk.Entry(main)
+Epochs.pack()
+
+
+button = tk.Button(main, text="Perceptron", width=10, height=3, command=lambda: big())
+button.pack()
+
+main.mainloop()
+
