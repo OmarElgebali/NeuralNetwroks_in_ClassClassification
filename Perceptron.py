@@ -32,7 +32,7 @@ def getfeature(feat1, feat2, col):
 
 
 def train_test(feature, label):
-    X_train, X_test, y_train, y_test = train_test_split(feature, label, test_size=0.4, stratify=label, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(feature, label, test_size=0.4, stratify=label, random_state=22)
     feature1_train = X_train[0]
     feature2_train = X_train[1]
     feature1_test = X_test[0]
@@ -78,8 +78,14 @@ def perceptron_train(feat1Train, feat2train, T_class, learning, epoch):
 
 
 def big():
-    boxs1 = str(var.get())
-    boxs2 = str(var1.get())
+    featuring = ['Area', 'Perimeter', 'MajorAxisLength', 'MinorAxisLength', 'roundnes']
+    selected_indices = boxs.curselection()
+    print(selected_indices)
+    selected_features = [featuring[i] for i in selected_indices]
+    boxs1 = boxs.get(selected_indices[0])
+    print(boxs1)
+    boxs2 = boxs.get(selected_indices[1])
+    print(boxs2)
     radioo = int(radio.get())
     Learning_Rate = float(LearningRate.get())
     Epochss = int(Epochs.get())
@@ -120,20 +126,14 @@ def big():
 import tkinter as tk
 main = tk.Tk()
 main.title('Perceptorn & Adaline')
-# boxs = tk.Listbox(main)
-# boxs.pack()
-# boxs.insert(0, 'Area')
-# boxs.insert(1, 'Perimeter')
-# boxs.insert(2, 'MajorAxisLength')
-# boxs.insert(3, 'MinorAxisLength')
-# boxs.insert(4, 'roundnes')
-# box = tk.Listbox(main)
-# box.pack()
-# box.insert(0, 'Area')
-# box.insert(1, 'Perimeter')
-# box.insert(2, 'MajorAxisLength')
-# box.insert(3, 'MinorAxisLength')
-# box.insert(4, 'roundnes')
+boxs = tk.Listbox(main, selectmode=tk.MULTIPLE)
+boxs.pack()
+boxs.insert(0, 'Area')
+boxs.insert(1, 'Perimeter')
+boxs.insert(2, 'MajorAxisLength')
+boxs.insert(3, 'MinorAxisLength')
+boxs.insert(4, 'roundnes')
+
 
 radio = tk.IntVar()
 tk.Radiobutton(main, text="C1 & C2", variable=radio, value=1).pack()
@@ -147,15 +147,15 @@ LearningRate.pack()
 options = ['Area', 'Perimeter', 'MajorAxisLength', 'MinorAxisLength', 'roundnes']
 
 
-var = tk.StringVar()
-cb = tk.Checkbutton(main, text=options[0], variable=var, offvalue="")
-cb.deselect()
-cb.pack()
-
-var1 = tk.StringVar()
-cb1 = tk.Checkbutton(main, text=options[1], variable=var1, offvalue="")
-cb1.deselect()
-cb1.pack()
+# var = tk.StringVar()
+# cb = tk.Checkbutton(main, text=options[0], variable= 'Area', offvalue="")
+# cb.deselect()
+# cb.pack()
+#
+# var1 = tk.StringVar()
+# cb1 = tk.Checkbutton(main, text=options[1], variable=var1, offvalue="")
+# cb1.deselect()
+# cb1.pack()
 
 tk.Label(main, text='Epochs').pack()
 Epochs = tk.Entry(main)
