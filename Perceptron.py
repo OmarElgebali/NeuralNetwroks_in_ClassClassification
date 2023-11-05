@@ -4,6 +4,7 @@ from tkinter import W
 from tkinter import *
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import MinMaxScaler
@@ -128,30 +129,32 @@ def perceptron_predict(x1, x2, W):
     return activation(x1 * W[1] + x2 * W[2] + W[0])
 
 
-def PerceptronPlot(f1,f2,w):
-    import matplotlib.pyplot as plt
+def PerceptronPlot(feature1, feature2, weights, labels):
 
     # Given weights and bias
-    w1, w2, b = 2, -3, 1
+    # w1, w2, b = 2, -3, 1
 
     # Sample data (replace these arrays with your feature arrays and class labels)
-    feature1 = np.array([2, 3, 1, 5, 6, 4, 7])
-    feature2 = np.array([3, 2, 5, 1, 7, 6, 4])
-    classes = np.array([0, 1, 0, 1, 1, 0, 1])  # Assuming binary classes 0 and 1
+    feature1 = np.array(feature1)
+    feature2 = np.array(feature2)
+    classes = np.array(labels)  # Assuming binary classes 0 and 1
 
     # Define the slope and intercept of the decision boundary
-    slope = -w[1] / w[2]
-    intercept = -w[0] / w[2]
+    slope = -weights[1] / weights[2]
+    # intercept = -weights[0] / weights[2]
+    intercept = -weights[2] / weights[1]
 
     # Generate x1 values
-    x1_values = np.linspace(min(f1) - 1, max(f1) + 1, 400)
+    x1_values = np.linspace(min(feature1) - 1, max(feature2) + 1, 400)
 
     # Calculate corresponding x2 values using the decision boundary equation
     x2_values = slope * x1_values + intercept
 
     # Plot the data points
     plt.figure(figsize=(8, 6))
-    plt.scatter(feature1[classes == 0], feature2[classes == 0], color='b', label='Class 0')
+    # for f1,f2 in zip(feature1,feature2):
+    #     if(f1)
+    plt.scatter(feature1[classes == -1], feature2[classes == -1], color='b', label='Class 0')
     plt.scatter(feature1[classes == 1], feature2[classes == 1], color='r', label='Class 1')
 
     # Plot the decision boundary
@@ -173,19 +176,14 @@ def execute(chunk, feat1, feat2, lR, epch):
     twoFeatures, targetClass = get_feature(feat1, feat2, reading)
     train1, train2, test1, test2, trainClassSample, testClassSample = train_test(twoFeatures, targetClass, feat1,
                                                                                  feat2)
-    proF1train, proF2train, prof1test, prof2test, ClassTrain, ClassTest = preprocessing(train1, train2, test1, test2
-                                                                                        , trainClassSample,
+    proF1train, proF2train, prof1test, prof2test, ClassTrain, ClassTest = preprocessing(train1, train2, test1, test2,
+                                                                                        trainClassSample,
                                                                                         testClassSample)
     weights = perceptron_train(proF1train, proF2train, ClassTrain, lR, epch)
-    PerceptronPlot(train1,train2)
-
-
-    
-
+    PerceptronPlot(proF1train, proF2train, weights, ClassTrain)
+    print("classTrain", ClassTrain)
+    print("proF1train", proF1train)
     y_predicted = perceptron_test(prof1test, prof2test, ClassTest, weights)
 
+
 execute(3, 'Area', 'Perimeter', 0.5, 100)
-
-
-
-
