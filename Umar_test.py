@@ -29,7 +29,7 @@ def get_feature(feat1, feat2, croppedData):
 
 
 def train_test(feature, label, f1, f2):
-    X_train, X_test, y_train, y_test = train_test_split(feature, label, test_size=0.4, stratify=label, random_state=22)
+    X_train, X_test, y_train, y_test = train_test_split(feature, label, test_size=0.3, stratify=label, random_state=22)
     feature1_train = X_train[f1]
     feature2_train = X_train[f2]
     feature1_test = X_test[f1]
@@ -38,20 +38,20 @@ def train_test(feature, label, f1, f2):
     targetTest = y_test
     return feature1_train, feature2_train, feature1_test, feature2_test, targetTrain, targetTest
 
-
+# adalin 0,1
 def preprocessing(trainf1, trainf2, testf1, testf2, trainClass, testClass):
     le = LabelEncoder()
-    # print(trainClass)
-    encodedTrainC = le.fit_transform(trainClass)
-    # print(encodedTrainC)
-    encodedTrainC = [i if i != 0 else -1 for i in encodedTrainC]
-    # print(testClass)
-    encodedTestC = le.fit_transform(testClass)
-    # print(encodedTestC)
-    encodedTestC = [i if i != 0 else -1 for i in encodedTestC]
     scaler = MinMaxScaler(feature_range=(-1, 1))
+    encodedTrainC = le.fit_transform(trainClass)
+    encodedTrainC = [i if i != 0 else -1 for i in encodedTrainC]
     normF1_train = scaler.fit_transform(np.array(trainf1).reshape(-1, 1))
     normF2_train = scaler.fit_transform(np.array(trainf2).reshape(-1, 1))
+    encodedTestC = le.fit_transform(testClass)
+    encodedTestC = [i if i != 0 else -1 for i in encodedTestC]
+    trainf1 = trainf1.fillna(trainf1.mean())
+    trainf2 = trainf2.fillna(trainf2.mean())
+    testf1 = testf1.fillna(testf1.mean())
+    testf2 = testf2.fillna(testf2.mean())
     normF1_test = scaler.fit_transform(np.array(testf1).reshape(-1, 1))
     normF2_test = scaler.fit_transform(np.array(testf2).reshape(-1, 1))
 
@@ -96,7 +96,7 @@ def Bigteste(testsample1, testsample2, testclass, weight):
     def activation(y):
         return 1 if y >= 0 else -1
 
-    for i in range(40):
+    for i in range(len(testclass)):
         x1 = testsample1[i]
         x2 = testsample2[i]
         yk = testclass[i]
