@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import W
 from tkinter import *
-from Umar_test import *
+from Preprocessing import *
 
 selected_indices = []
 box1 = ''
