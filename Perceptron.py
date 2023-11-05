@@ -38,6 +38,7 @@ def train_test(feature, label, f1, f2):
     targetTest = y_test
     return feature1_train, feature2_train, feature1_test, feature2_test, targetTrain, targetTest
 
+
 # adalin 0,1
 def preprocessing(trainf1, trainf2, testf1, testf2, trainClass, testClass):
     le = LabelEncoder()
@@ -52,8 +53,8 @@ def preprocessing(trainf1, trainf2, testf1, testf2, trainClass, testClass):
     trainf2 = trainf2.fillna(trainf2.mean())
     testf1 = testf1.fillna(testf1.mean())
     testf2 = testf2.fillna(testf2.mean())
-    normF1_test = scaler.fit_transform(np.array(testf1).reshape(-1, 1))
-    normF2_test = scaler.fit_transform(np.array(testf2).reshape(-1, 1))
+    normF1_test = scaler.transform(np.array(testf1).reshape(-1, 1))
+    normF2_test = scaler.transform(np.array(testf2).reshape(-1, 1))
 
     return normF1_train, normF2_train, normF1_test, normF2_test, encodedTrainC, encodedTestC
 
@@ -63,16 +64,33 @@ def preprocessing(trainf1, trainf2, testf1, testf2, trainClass, testClass):
 # [0 1 0 1 1 0 0 0 1 0 1 0 1 1 0 1 1 1 0 1 0 0 1 0 0 0 1 1 1 0 0 1 1 1 0 0 0 1 0 1]
 # [B S B S S B B B S B S B S S B S S S B S B B S B B B S S S B B S S S B B B S B S]
 
+def encode_to_nums(labels, s1, s2):
+    string_to_num = {s1: -1, s2: 1}
+    numerical_values = [string_to_num[string] for string in labels]
+    return numerical_values
+
+
+def revert_to_strings(labels, s1, s2):
+    num_to_string = {-1: s1, 1: s2}
+    reverted_strings = [num_to_string[num] for num in labels]
+    return reverted_strings
+
+
+def revert_to_string(label, s1, s2):
+    num_to_string = {-1: s1, 1: s2}
+    reverted_string = num_to_string[label]
+    return reverted_string
+
+
+def activation(y):
+    return 1 if y >= 0 else -1
+
 
 def perceptron_train(feat1Train, feat2train, T_class, learning, epoch):
-    def activation(y):
-        return 1 if y >= 0 else -1
-
     w0 = 0.2
     w1 = 0.867
     w2 = 0.75011
     for k in range(epoch):
-        # while True:
         errorCute = 0
         for x1, x2, t in zip(feat1Train, feat2train, T_class):
             y = x1 * w1 + x2 * w2 + w0
@@ -87,15 +105,13 @@ def perceptron_train(feat1Train, feat2train, T_class, learning, epoch):
             w2 = w2 + learning * error * float(x2)
         if errorCute == 0:
             break
-    print(w0, w1, w2)
+    print(f'W = [{w0} , {w1} , {w2}]')
     w = [w0, w1, w2]
     return w
 
 
-def Bigteste(testsample1, testsample2, testclass, weight):
-    def activation(y):
-        return 1 if y >= 0 else -1
-
+def perceptron_test(testsample1, testsample2, testclass, weight):
+    y_predicted = []
     for i in range(len(testclass)):
         x1 = testsample1[i]
         x2 = testsample2[i]
@@ -104,6 +120,12 @@ def Bigteste(testsample1, testsample2, testclass, weight):
         y = activation(y)
         print("Predicted", y, "Actual", yk)
         # print("Acutal", yk)
+        y_predicted.append(y)
+    return y_predicted
+
+
+def perceptron_predict(x1, x2, W):
+    return activation(x1 * W[1] + x2 * W[2] + W[0])
 
 
 # 0.19999999999999996 -1.0192994731258205 -1.0819145688874579
@@ -117,6 +139,6 @@ def execute(chunk, feat1, feat2, lR, epch):
                                                                                         testClassSample)
 
     weights = perceptron_train(proF1train, proF2train, ClassTrain, lR, epch)
-    Bigteste(prof1test, prof2test, ClassTest, weights)
+    y_predicted = perceptron_test(prof1test, prof2test, ClassTest, weights)
 
 # execute(3, 'Area', 'Perimeter', 0.5, 100)
