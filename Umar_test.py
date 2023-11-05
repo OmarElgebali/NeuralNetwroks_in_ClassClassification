@@ -12,13 +12,13 @@ from sklearn.preprocessing import MinMaxScaler
 def readFile(radio):
     df = pd.read_csv('Dry_Bean_Dataset.csv')
     if radio == 1:
-        select_row = df.iloc[0:102]
+        select_row = df.iloc[0:100].reset_index()
     if radio == 2:
         half1 = df.iloc[:50]
         half2 = df.iloc[100:]
-        select_row = pd.concat([half1, half2])
+        select_row = pd.concat([half1, half2]).reset_index()
     elif radio == 3:
-        select_row = df.iloc[51:150]
+        select_row = df.iloc[50:150].reset_index()
     return select_row
 
 
@@ -38,26 +38,59 @@ def train_test(feature, label, f1, f2):
     targetTest = y_test
     return feature1_train, feature2_train, feature1_test, feature2_test, targetTrain, targetTest
 
-# adalin 0,1
-def preprocessing(trainf1, trainf2, testf1, testf2, trainClass, testClass):
+
+def FeatureNormalizingFit(algo, feature):
+    scaler = MinMaxScaler()
+    if algo == 'Perceptron':
+        scaler = MinMaxScaler(feature_range=(-1, 1))
+    normedFeature = np.array(feature).reshape(-1, 1)
+    scaler.fit(normedFeature)
+    return scaler
+
+
+def FeatureNormlizeTransform(fitted, feature):
+    normedFeatures = np.array(feature).reshape(-1, 1)
+    transform_feature = fitted.transform(normedFeatures)
+    return transform_feature
+
+
+def EncoderFitter(Tclasstrain):
     le = LabelEncoder()
-    scaler = MinMaxScaler(feature_range=(-1, 1))
-    encodedTrainC = le.fit_transform(trainClass)
-    encodedTrainC = [i if i != 0 else -1 for i in encodedTrainC]
-    normF1_train = scaler.fit_transform(np.array(trainf1).reshape(-1, 1))
-    normF2_train = scaler.fit_transform(np.array(trainf2).reshape(-1, 1))
-    encodedTestC = le.fit_transform(testClass)
-    encodedTestC = [i if i != 0 else -1 for i in encodedTestC]
-    trainf1 = trainf1.fillna(trainf1.mean())
-    trainf2 = trainf2.fillna(trainf2.mean())
-    testf1 = testf1.fillna(testf1.mean())
-    testf2 = testf2.fillna(testf2.mean())
-    normF1_test = scaler.fit_transform(np.array(testf1).reshape(-1, 1))
-    normF2_test = scaler.fit_transform(np.array(testf2).reshape(-1, 1))
-
-    return normF1_train, normF2_train, normF1_test, normF2_test, encodedTrainC, encodedTestC
+    le.fit(Tclasstrain)
+    return le
 
 
+def EncoderTansformed(algo, fitModel, tclass):
+    Transformed_class = fitModel.transform(tclass.to_numpy())
+    if algo == 'Perceptron':
+        Transformed_class = [i if i != 0 else -1 for i in Transformed_class]
+    return Transformed_class
+
+
+def fillEmpty(feature):
+    features = feature.fillna(feature.mean())
+    return features
+
+
+def preprocessing_training(algo, trainf1, trainf2, trainClass):
+    fillF1 = fillEmpty(trainf1)
+    fillF2 = fillEmpty(trainf2)
+    EncodedModel = EncoderFitter(trainClass)
+    encodedTarget = EncoderTansformed(algo, EncodedModel, trainClass)
+    normModelf1 = FeatureNormalizingFit(algo, fillF1)
+    normModelf2 = FeatureNormalizingFit(algo, fillF2)
+    normedFeaturetrain1 = FeatureNormlizeTransform(normModelf1, fillF1)
+    normedFeaturetrain2 = FeatureNormlizeTransform(normModelf2, fillF2)
+    return EncodedModel, normModelf1, normModelf2, encodedTarget, normedFeaturetrain1, normedFeaturetrain2
+
+
+def preprocessing_test(testf1, testf2, testclass, norm1, norm2, encoder):
+    classEncode = EncoderTansformed(encoder, testclass)
+    fillF1 = fillEmpty(testf1)
+    fillF2 = fillEmpty(testf2)
+    f1Transform = FeatureNormlizeTransform(norm1, testf1)
+    f2Transform = FeatureNormlizeTransform(norm2, testf2)
+    return classEncode, f1Transform, f2Transform
 # [0 0 1 1 0 0 0 1 0 1 1 0 1 1 1 1 1 1 0 0 1 1 1 0 0 0 0 1 0 0 1 1 1 0 1 0 1 1 0 1 1 0 0 0 0 1 0 0 1 1 0 0 1 0 1 0 0 0 1 1]
 # [B B S S B B B S B S S B S S S S S S B B S S S B B B B S B B S S S B S B S S B S S B B B B S B B S S B B S B S B B B S S]
 # [0 1 0 1 1 0 0 0 1 0 1 0 1 1 0 1 1 1 0 1 0 0 1 0 0 0 1 1 1 0 0 1 1 1 0 0 0 1 0 1]
@@ -107,16 +140,39 @@ def Bigteste(testsample1, testsample2, testclass, weight):
 
 
 # 0.19999999999999996 -1.0192994731258205 -1.0819145688874579
-def execute(chunk, feat1, feat2, lR, epch):
-    reading = readFile(chunk)
-    twoFeatures, targetClass = get_feature(feat1, feat2, reading)
-    train1, train2, test1, test2, trainClassSample, testClassSample = train_test(twoFeatures, targetClass, feat1,
-                                                                                 feat2)
-    proF1train, proF2train, prof1test, prof2test, ClassTrain, ClassTest = preprocessing(train1, train2, test1, test2
-                                                                                        , trainClassSample,
-                                                                                        testClassSample)
-
-    weights = perceptron_train(proF1train, proF2train, ClassTrain, lR, epch)
-    Bigteste(prof1test, prof2test, ClassTest, weights)
+# def execute(chunk, feat1, feat2, lR, epch):
+#     reading = readFile(chunk)
+#     twoFeatures, targetClass = get_feature(feat1, feat2, reading)
+#     train1, train2, test1, test2, trainClassSample, testClassSample = train_test(twoFeatures, targetClass, feat1,
+#                                                                                  feat2)
+#     proF1train, proF2train, prof1test, prof2test, ClassTrain, ClassTest = preprocessing(train1, train2, test1, test2
+#                                                                                         , trainClassSample,
+#                                                                                         testClassSample)
+#
+#     weights = perceptron_train(proF1train, proF2train, ClassTrain, lR, epch)
+#     Bigteste(prof1test, prof2test, ClassTest, weights)
 
 # execute(3, 'Area', 'Perimeter', 0.5, 100)
+
+
+df = readFile(1)
+print("Data", df)
+feature, targetclass = get_feature('Area', 'Perimeter', df)
+print("Features", feature)
+print("Target Class", targetclass)
+f1train, f2train, f1test, f2test, Ctrain, Ctest = train_test(feature, targetclass, 'Area', 'Perimeter')
+print("Feature 1 train & 2 train", f1train, f2train)
+print("Feature 1 test & 2 test", f1test, f2test)
+print("Target Class train", Ctrain)
+print("Target Class test", Ctest)
+Encoder, normalizer1, normalizer2, encodedclasstrain, norfeattrain1, norFeattrain2 = preprocessing_training(f1train, f2train, Ctrain)
+print("Encoded Target Class Train ", encodedclasstrain)
+print("Normalized Feature Train 1 ", norfeattrain1)
+print("Normalized Feature Train 2 ", norFeattrain2)
+classEncodetest, f1Transformtest, f2Transformtest = preprocessing_test(f1test, f2test, Ctest, normalizer1, normalizer2, Encoder)
+print("Encoded Target Class Test ", classEncodetest)
+print("Transformed Feature 1 Test ", f1Transformtest)
+print("Transformed Feature 2 Test ", f2Transformtest)
+weight = perceptron_train(norfeattrain1, norFeattrain2, encodedclasstrain, 0.5, 100)
+print(weight)
+Bigteste(f1Transformtest, f2Transformtest, classEncodetest, weight)
