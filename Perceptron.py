@@ -128,6 +128,45 @@ def perceptron_predict(x1, x2, W):
     return activation(x1 * W[1] + x2 * W[2] + W[0])
 
 
+def PerceptronPlot(f1,f2,w):
+    import matplotlib.pyplot as plt
+
+    # Given weights and bias
+    w1, w2, b = 2, -3, 1
+
+    # Sample data (replace these arrays with your feature arrays and class labels)
+    feature1 = np.array([2, 3, 1, 5, 6, 4, 7])
+    feature2 = np.array([3, 2, 5, 1, 7, 6, 4])
+    classes = np.array([0, 1, 0, 1, 1, 0, 1])  # Assuming binary classes 0 and 1
+
+    # Define the slope and intercept of the decision boundary
+    slope = -w[1] / w[2]
+    intercept = -w[0] / w[2]
+
+    # Generate x1 values
+    x1_values = np.linspace(min(f1) - 1, max(f1) + 1, 400)
+
+    # Calculate corresponding x2 values using the decision boundary equation
+    x2_values = slope * x1_values + intercept
+
+    # Plot the data points
+    plt.figure(figsize=(8, 6))
+    plt.scatter(feature1[classes == 0], feature2[classes == 0], color='b', label='Class 0')
+    plt.scatter(feature1[classes == 1], feature2[classes == 1], color='r', label='Class 1')
+
+    # Plot the decision boundary
+    plt.plot(x1_values, x2_values, color='g', label='Decision Boundary')
+
+    plt.xlabel('Feature 1')
+    plt.ylabel('Feature 2')
+    plt.axhline(0, color='black', linewidth=0.5)  # X-axis
+    plt.axvline(0, color='black', linewidth=0.5)  # Y-axis
+    plt.grid(True, linewidth=0.2, linestyle='--', alpha=0.7)
+    plt.legend()
+    plt.title('Decision Boundary for Single Perceptron Model')
+    plt.show()
+
+
 # 0.19999999999999996 -1.0192994731258205 -1.0819145688874579
 def execute(chunk, feat1, feat2, lR, epch):
     reading = readFile(chunk)
@@ -137,8 +176,16 @@ def execute(chunk, feat1, feat2, lR, epch):
     proF1train, proF2train, prof1test, prof2test, ClassTrain, ClassTest = preprocessing(train1, train2, test1, test2
                                                                                         , trainClassSample,
                                                                                         testClassSample)
-
     weights = perceptron_train(proF1train, proF2train, ClassTrain, lR, epch)
+    PerceptronPlot(train1,train2)
+
+
+    
+
     y_predicted = perceptron_test(prof1test, prof2test, ClassTest, weights)
 
-# execute(3, 'Area', 'Perimeter', 0.5, 100)
+execute(3, 'Area', 'Perimeter', 0.5, 100)
+
+
+
+
