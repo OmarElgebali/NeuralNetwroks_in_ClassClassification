@@ -1,4 +1,8 @@
 import matplotlib.pyplot as plt
+import numpy as np
+
+import Preprocessing
+
 
 class Evaluation:
     def __init__(self, y_predict, y_actual, algorithm):
@@ -36,83 +40,31 @@ class Evaluation:
         # for row in confusion_matrix:
         #     print(row)
 
+    def PerceptronPlot(self, feature1, feature2, weights, labels, f1_name, f2_name):
+        min_class = 0 if self.algorithm == 'Adaline' else -1
 
-# dataset = read_csv('Datasets/Dry_Bean_Dataset_ADALINE.csv')
-# x_1 = dataset['MajorAxisLength'].to_numpy().reshape(-1, 1)
-# x_2 = dataset['MinorAxisLength'].to_numpy().reshape(-1, 1)
-# y = dataset['Class'].tolist()
-# y_bin = [1 if label == 'CALI' else 0 for label in y]
-#
-# minMax = [MinMaxScaler() for _ in range(2)]
-# x_1_scaled = minMax[0].fit_transform(x_1)
-# x_2_scaled = minMax[1].fit_transform(x_2)
-# adaline = Adaline(x_1_scaled, x_2_scaled, y_bin, 1, 1000, .1, .01)
-# adaline.fit()
-#
-# feature1 = [295.4698306,
-#             274.8633573,
-#             313.570417,
-#             301.392791,
-#             357.1890036,
-#             330.155474,
-#             307.9956112,
-#             336.9594211,
-#             354.7254337,
-#             342.74242472,
-#             255.0735621,
-#             244.102719,
-#             233.8049677,
-#             240.9695005,
-#             260.0898266,
-#             257.4648986,
-#             265.4699791,
-#             252.7723761,
-#             257.4891433,
-#             240.3770452
-#             ]
-#
-# feature2 = [
-#     196.3118225,
-#     211.8851392,
-#     197.8987002,
-#     208.3464437,
-#     179.8346914,
-#     198.4615253,
-#     213.6247263,
-#     199.0051127,
-#     193.354325,
-#     203.259513,
-#     157.80274,
-#     168.5224911,
-#     179.500919,
-#     175.6450402,
-#     163.1027196,
-#     165.036857,
-#     161.0284951,
-#     169.4350399,
-#     166.5592919,
-#     178.6807736
-# ]
-# labelTest = [
-#     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-# ]
-#
-# feature1 = np.array(feature1).reshape(-1, 1)
-# feature2 = np.array(feature2).reshape(-1, 1)
-# feature1_scaled = minMax[0].transform(feature1)
-# feature2_scaled = minMax[1].transform(feature2)
-# sample1 = [240.3770452]
-# sample1 = np.array(sample1).reshape(-1, 1)
-#
-# sample2 = [178.6807736]
-# sample2 = np.array(sample2).reshape(-1, 1)
-#
-# f1 = minMax[0].transform(sample1)
-# f2 = minMax[1].transform(sample2)
-# predict = adaline.predict([f1, f2])
-# print("predict", predict)
-#
-# adaline.test(feature1_scaled, feature2_scaled, labelTest)
-#
-# eval = Evaluation(feature1_scaled, feature2_scaled, y_bin)
-# eval.confusion_matrix()
+        feature1 = np.array(feature1)
+        feature2 = np.array(feature2)
+        classes = np.array(labels)
+
+        slope = -weights[1] / weights[2]
+        intercept = -weights[0] / weights[2]
+
+        x1_values = np.linspace(min(feature1) - 1, max(feature2) + 1, 400)
+
+        x2_values = slope * x1_values + intercept
+
+        plt.figure(figsize=(8, 6))
+        plt.scatter(feature1[classes == min_class], feature2[classes == min_class], color='b', label=Preprocessing.EncoderInvereseTansformed(self.algorithm, 0))
+        plt.scatter(feature1[classes == 1], feature2[classes == 1], color='r', label=Preprocessing.EncoderInvereseTansformed(self.algorithm, 1))
+
+        plt.plot(x1_values, x2_values, color='g', label='Decision Boundary')
+
+        plt.xlabel(f'Feature 1 ({f1_name})')
+        plt.ylabel(f'Feature 2 ({f2_name})')
+        plt.axhline(0, color='black', linewidth=0.5)  # X-axis
+        plt.axvline(0, color='black', linewidth=0.5)  # Y-axis
+        plt.grid(True, linewidth=0.2, linestyle='--', alpha=0.7)
+        plt.legend()
+        plt.title(f'Decision Boundary for {self.algorithm} Model')
+        plt.show()

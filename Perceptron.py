@@ -9,6 +9,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import MinMaxScaler
 
+import Preprocessing
+from Preprocessing import readFile, get_feature, train_test
+
+
 def encode_to_nums(labels, s1, s2):
     string_to_num = {s1: -1, s2: 1}
     numerical_values = [string_to_num[string] for string in labels]
@@ -113,22 +117,3 @@ def PerceptronPlot(feature1, feature2, weights, labels):
     plt.legend()
     plt.title('Decision Boundary for Single Perceptron Model')
     plt.show()
-
-
-# def execute(chunk, feat1, feat2, lR, epch):
-#     reading = readFile(chunk)
-#     twoFeatures, targetClass = get_feature(feat1, feat2, reading)
-#     train1, train2, test1, test2, trainClassSample, testClassSample = train_test(twoFeatures, targetClass, feat1,
-#                                                                                  feat2)
-#     proF1train, proF2train, prof1test, prof2test, ClassTrain, ClassTest = preprocessing(train1, train2, test1, test2
-#                                                                                         , trainClassSample,
-#                                                                                         testClassSample)
-#     weights = perceptron_train(proF1train, proF2train, ClassTrain, lR, epch)
-#     PerceptronPlot(train1,train2)
-#
-#
-#
-#
-#     y_predicted = perceptron_test(prof1test, prof2test, ClassTest, weights)
-#
-# execute(3, 'Area', 'Perimeter', 0.5, 100)

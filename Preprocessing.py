@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import MinMaxScaler
 
+label_encode_model = LabelEncoder()
 
 def readFile(radio):
     df = pd.read_csv('Dry_Bean_Dataset.csv')
@@ -55,15 +56,23 @@ def FeatureNormlizeTransform(fitted, feature):
 
 
 def EncoderFitter(Tclasstrain):
-    le = LabelEncoder()
-    le.fit(Tclasstrain)
-    return le
+    global label_encode_model
+    label_encode_model = LabelEncoder()
+    label_encode_model.fit(Tclasstrain)
+    return label_encode_model
 
 
 def EncoderTansformed(algo, fitModel, tclass):
     Transformed_class = fitModel.transform(tclass.to_numpy())
     if algo == 'Perceptron':
         Transformed_class = [i if i != 0 else -1 for i in Transformed_class]
+    return Transformed_class
+
+
+def EncoderInvereseTansformed(algo, tclass):
+    if algo == 'Perceptron':
+        tclass = tclass if tclass == 1 else 0
+    Transformed_class = label_encode_model.inverse_transform([tclass])[0]
     return Transformed_class
 
 
