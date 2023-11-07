@@ -8,13 +8,16 @@ import evaluation
 encoder_model = LabelEncoder()
 scaler_f1_model = MinMaxScaler()
 scaler_f2_model = MinMaxScaler()
+
 encoded_class_train = []
 norm_feature_1_train = []
 norm_feature_2_train = []
 encoded_class_test = []
 norm_feature_1_test = []
 norm_feature_2_test = []
+
 label_test_prediction = []
+label_train_prediction = []
 adaline_model = None
 model_weights = []
 
@@ -40,15 +43,15 @@ def prepare(algorithm, feature_1_name, feature_2_name, classes_encode_number):
 
 
 def fit(algorithm, epochs, eta, mse, bias):
-    global label_test_prediction, adaline_model, model_weights
+    global label_test_prediction, label_train_prediction, adaline_model, model_weights
     if algorithm == 'Perceptron':
         model_weights = Perceptron.perceptron_train(norm_feature_1_train, norm_feature_2_train, encoded_class_train, eta, epochs)
         label_test_prediction = Perceptron.perceptron_test(norm_feature_1_test, norm_feature_2_test, encoded_class_test, model_weights)
     elif algorithm == 'Adaline':
         adaline_model = Adaline.Adaline(norm_feature_1_train, norm_feature_2_train, encoded_class_train, bias, epochs, eta, mse)
         adaline_model.fit()
-        # label_test_prediction = adaline_model.test(norm_feature_1_test, norm_feature_2_test)
-        label_test_prediction = adaline_model.test_with_eval(norm_feature_1_test, norm_feature_2_test,encoded_class_test)
+        label_test_prediction = adaline_model.test(norm_feature_1_test, norm_feature_2_test)
+        # label_test_prediction = adaline_model.test_with_eval(norm_feature_1_test, norm_feature_2_test,encoded_class_test)
         model_weights = adaline_model.weights
     plot_draw(algorithm)
 
@@ -64,7 +67,6 @@ def predict(algorithm, x1, x2, labels_encode_number):
 
 
 def plot_draw(algorithm):
-    evaluation_model = evaluation.Evaluation(y_predict=label_test_prediction, y_actual=encoded_class_test,
-                                             algorithm=algorithm)
-    evaluation_model.PerceptronPlot(feature1=norm_feature_1_test, feature2=norm_feature_2_test, weights=model_weights, labels=encoded_class_test, f1_name=f1_name, f2_name=f2_name)
+    evaluation_model = evaluation.Evaluation(y_predict=label_test_prediction, y_actual=encoded_class_test, algorithm=algorithm, f1_name=f1_name, f2_name=f2_name)
+    evaluation_model.PerceptronPlot(feature1=norm_feature_1_train, feature2=norm_feature_2_train, weights=model_weights, labels=encoded_class_train)
     evaluation_model.confusion_matrix()

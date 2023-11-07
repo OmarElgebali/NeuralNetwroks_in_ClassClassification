@@ -55,24 +55,24 @@ def FeatureNormlizeTransform(fitted, feature):
     return transform_feature
 
 
-def EncoderFitter(Tclasstrain):
+def EncoderFitter(target_class_train):
     global label_encode_model
     label_encode_model = LabelEncoder()
-    label_encode_model.fit(Tclasstrain)
+    label_encode_model.fit(target_class_train)
     return label_encode_model
 
 
-def EncoderTansformed(algo, fitModel, tclass):
-    Transformed_class = fitModel.transform(tclass.to_numpy())
+def encoder_transform(algo, fitModel, target_class_array):
+    Transformed_class = fitModel.transform(target_class_array.to_numpy())
     if algo == 'Perceptron':
         Transformed_class = [i if i != 0 else -1 for i in Transformed_class]
     return Transformed_class
 
 
-def EncoderInvereseTansformed(algo, tclass):
+def encoder_inverse_transform(algo, target_class_point):
     if algo == 'Perceptron':
-        tclass = tclass if tclass == 1 else 0
-    Transformed_class = label_encode_model.inverse_transform([tclass])[0]
+        target_class_point = target_class_point if target_class_point == 1 else 0
+    Transformed_class = label_encode_model.inverse_transform([target_class_point])[0]
     return Transformed_class
 
 
@@ -81,51 +81,22 @@ def fillEmpty(feature):
     return features
 
 
-def preprocessing_training(algo, trainf1, trainf2, trainClass):
-    fillF1 = fillEmpty(trainf1)
-    fillF2 = fillEmpty(trainf2)
-    EncodedModel = EncoderFitter(trainClass)
-    encodedTarget = EncoderTansformed(algo, EncodedModel, trainClass)
-    normModelf1 = FeatureNormalizingFit(algo, fillF1)
-    normModelf2 = FeatureNormalizingFit(algo, fillF2)
-    normedFeaturetrain1 = FeatureNormlizeTransform(normModelf1, fillF1)
-    normedFeaturetrain2 = FeatureNormlizeTransform(normModelf2, fillF2)
-    return EncodedModel, normModelf1, normModelf2, encodedTarget, normedFeaturetrain1, normedFeaturetrain2
+def preprocessing_training(algo, feature_1_train, feature_2_train, trainClass):
+    fillF1 = fillEmpty(feature_1_train)
+    fillF2 = fillEmpty(feature_2_train)
+    encoded_model = EncoderFitter(trainClass)
+    encoded_target = encoder_transform(algo, encoded_model, trainClass)
+    norm_model_f1 = FeatureNormalizingFit(algo, fillF1)
+    norm_model_f2 = FeatureNormalizingFit(algo, fillF2)
+    normed_feature_1_train = FeatureNormlizeTransform(norm_model_f1, fillF1)
+    normed_feature_2_train = FeatureNormlizeTransform(norm_model_f2, fillF2)
+    return encoded_model, norm_model_f1, norm_model_f2, encoded_target, normed_feature_1_train, normed_feature_2_train
 
 
 def preprocessing_test(algo, testf1, testf2, testclass, norm1, norm2, encoder):
-    classEncode = EncoderTansformed(algo, encoder, testclass)
+    classEncode = encoder_transform(algo, encoder, testclass)
     fillF1 = fillEmpty(testf1)
     fillF2 = fillEmpty(testf2)
     f1Transform = FeatureNormlizeTransform(norm1, fillF1)
     f2Transform = FeatureNormlizeTransform(norm2, fillF2)
     return classEncode, f1Transform, f2Transform
-
-
-# df = readFile(1)
-# print("Data", df)
-#
-# feature, targetclass = get_feature('Area', 'Perimeter', df)
-# print("Features", feature)
-# print("Target Class", targetclass)
-#
-# f1train, f2train, f1test, f2test, Ctrain, Ctest = train_test(feature, targetclass, 'Area', 'Perimeter')
-# print("Feature 1 train & 2 train", f1train, f2train)
-# print("Feature 1 test & 2 test", f1test, f2test)
-# print("Target Class train", Ctrain)
-# print("Target Class test", Ctest)
-#
-# Encoder, normalizer1, normalizer2, encodedclasstrain, norfeattrain1, norFeattrain2 = preprocessing_training(f1train, f2train, Ctrain)
-# print("Encoded Target Class Train ", encodedclasstrain)
-# print("Normalized Feature Train 1 ", norfeattrain1)
-# print("Normalized Feature Train 2 ", norFeattrain2)
-#
-# classEncodetest, f1Transformtest, f2Transformtest = preprocessing_test(f1test, f2test, Ctest, normalizer1, normalizer2, Encoder)
-# print("Encoded Target Class Test ", classEncodetest)
-# print("Transformed Feature 1 Test ", f1Transformtest)
-# print("Transformed Feature 2 Test ", f2Transformtest)
-
-
-# weight = perceptron_train(norfeattrain1, norFeattrain2, encodedclasstrain, 0.5, 100)
-# print(weight)
-# Bigteste(f1Transformtest, f2Transformtest, classEncodetest, weight)

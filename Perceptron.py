@@ -54,7 +54,7 @@ def perceptron_train(feat1Train, feat2train, T_class, learning, epoch):
             w2 = w2 + learning * error * float(x2)
         if errorCute == 0:
             break
-    print(f'W = [{w0} , {w1} , {w2}]')
+    # print(f'W = [{w0} , {w1} , {w2}]')
     w = [w0, w1, w2]
     return w
 
@@ -67,53 +67,10 @@ def perceptron_test(testsample1, testsample2, testclass, weight):
         yk = testclass[i]
         y = x1 * weight[1] + x2 * weight[2] + weight[0]
         y = activation(y)
-        print("Predicted", y, "Actual", yk)
-        # print("Acutal", yk)
+        # print("Predicted", y, "Actual", yk)
         y_predicted.append(y)
     return y_predicted
 
 
 def perceptron_predict(x1, x2, W):
     return activation(x1 * W[1] + x2 * W[2] + W[0])
-
-
-def PerceptronPlot(feature1, feature2, weights, labels):
-    import matplotlib.pyplot as plt
-
-    # Given weights and bias
-    # w1, w2, b = 2, -3, 1
-
-    # Sample data (replace these arrays with your feature arrays and class labels)
-    feature1 = np.array(feature1)
-    feature2 = np.array(feature2)
-    classes = np.array(labels)  # Assuming binary classes 0 and 1
-
-    # Define the slope and intercept of the decision boundary
-    slope = -weights[1] / weights[2]
-    # intercept = -weights[0] / weights[2]
-    intercept = -weights[2] / weights[1]
-
-    # Generate x1 values
-    x1_values = np.linspace(min(feature1) - 1, max(feature2) + 1, 400)
-
-    # Calculate corresponding x2 values using the decision boundary equation
-    x2_values = slope * x1_values + intercept
-
-    # Plot the data points
-    plt.figure(figsize=(8, 6))
-    # for f1,f2 in zip(feature1,feature2):
-    #     if(f1)
-    plt.scatter(feature1[classes == -1], feature2[classes == -1], color='b', label='Class 0')
-    plt.scatter(feature1[classes == 1], feature2[classes == 1], color='r', label='Class 1')
-
-    # Plot the decision boundary
-    plt.plot(x1_values, x2_values, color='g', label='Decision Boundary')
-
-    plt.xlabel('Feature 1')
-    plt.ylabel('Feature 2')
-    plt.axhline(0, color='black', linewidth=0.5)  # X-axis
-    plt.axvline(0, color='black', linewidth=0.5)  # Y-axis
-    plt.grid(True, linewidth=0.2, linestyle='--', alpha=0.7)
-    plt.legend()
-    plt.title('Decision Boundary for Single Perceptron Model')
-    plt.show()

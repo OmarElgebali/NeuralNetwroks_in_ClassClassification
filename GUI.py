@@ -95,9 +95,9 @@ for feature_name in features_names:
     features_listbox.insert(tk.END, feature_name)
 
 lbl_pred_x1 = tk.Label(Task_1_frame, text="X1", font=('Times New Roman', 16))
-lbl_pred_x1.grid(row=7, column=0, sticky=tk.W + tk.E)
+lbl_pred_x1.grid(row=7, column=0, columnspan=2, sticky=tk.W + tk.E)
 txt_pred_x1 = tk.Entry(Task_1_frame)
-txt_pred_x1.grid(row=7, column=1, sticky=tk.W + tk.E)
+txt_pred_x1.grid(row=7, column=2, sticky=tk.W + tk.E)
 
 lbl_pred_x2 = tk.Label(Task_1_frame, text="X2", font=('Times New Roman', 16))
 lbl_pred_x2.grid(row=7, column=3, sticky=tk.W + tk.E)
@@ -157,6 +157,8 @@ def check_fitting():
     check_if_fitted['feature_1_name'] = feature_1_name
     check_if_fitted['feature_2_name'] = feature_2_name
     check_if_fitted['classes_encode_number'] = classes_encode_number
+    lbl_pred_x1.config(text=f"X1 ({feature_1_name})")
+    lbl_pred_x2.config(text=f"X1 ({feature_2_name})")
 
 
 def start_predicting():
@@ -217,7 +219,7 @@ def plot_evaluation():
         messagebox.showerror(title="Error",
                              message=f"This Model is not fitted yet\nAlgorithm: {algorithm}\nClasses: {classes_encoding[classes_encode_number]}\nFeature 1: {feature_1_name}\nFeature 2: {feature_2_name}")
         return
-    Core.plot_conf_matrix(algorithm)
+    Core.plot_draw(algorithm)
 
 
 btn_fit = tk.Button(Task_1_frame, text="Fit", font=('Arial', 12), command=check_fitting)
