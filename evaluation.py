@@ -15,6 +15,9 @@ class Evaluation:
         self.class_1 = Preprocessing.encoder_inverse_transform(algorithm, 1)
 
     def confusion_matrix(self):
+        minimum_class = 0
+        if self.algorithm == 'Perceptron':
+            minimum_class = -1
         true_positives = 0
         false_positives = 0
         true_negatives = 0
@@ -23,11 +26,11 @@ class Evaluation:
         for actual, predicted in zip(self.y_actual, self.y_predict):
             if actual == 1 and predicted == 1:
                 true_positives += 1
-            elif actual == 0 and predicted == 1:
+            elif actual == minimum_class and predicted == 1:
                 false_positives += 1
-            elif actual == 0 and predicted == 0:
+            elif actual == minimum_class and predicted == minimum_class:
                 true_negatives += 1
-            elif actual == 1 and predicted == 0:
+            elif actual == 1 and predicted == minimum_class:
                 false_negatives += 1
         confusion_matrix = [
             [true_positives, false_positives],
@@ -44,10 +47,10 @@ class Evaluation:
         plt.xlabel("Predicted labels")
         plt.xticks([0, 1], ["Predicted 0", "Predicted 1"])
         plt.yticks([0, 1], ["True 0", "True 1"])
-        # plt.savefig(f"Results/[{self.algorithm}][{self.f1_name}_{self.f2_name}][{self.class_0}_{self.class_1}] - Confusion Matrix.png")
-        plt.show()
+        plt.savefig(f"Results/[{self.algorithm}][{self.f1_name}_{self.f2_name}][{self.class_0}_{self.class_1}] - Confusion Matrix.png")
+        # plt.show()
 
-    def PerceptronPlot(self, feature1, feature2, weights, labels):
+    def plot_decision_boundary(self, feature1, feature2, weights, labels):
         min_class = 0 if self.algorithm == 'Adaline' else -1
 
         feature1 = np.array(feature1)
@@ -75,5 +78,5 @@ class Evaluation:
         plt.grid(True, linewidth=0.2, linestyle='--', alpha=0.7)
         plt.legend()
         plt.title(f"Decision Boundary of {self.algorithm} Algorithm\n with Feature 1 ({self.f1_name}) and Feature 2 ({self.f2_name}) \n for the 2 classes ({self.class_0} & {self.class_1})")
-        # plt.savefig(f"Results/[{self.algorithm}][{self.f1_name}_{self.f2_name}][{self.class_0}_{self.class_1}] - Decision Boundary.png")
-        plt.show()
+        plt.savefig(f"Results/[{self.algorithm}][{self.f1_name}_{self.f2_name}][{self.class_0}_{self.class_1}] - Decision Boundary.png")
+        # plt.show()

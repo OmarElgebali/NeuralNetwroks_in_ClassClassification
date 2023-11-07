@@ -68,5 +68,5 @@ def predict(algorithm, x1, x2, labels_encode_number):
 
 def plot_draw(algorithm):
     evaluation_model = evaluation.Evaluation(y_predict=label_test_prediction, y_actual=encoded_class_test, algorithm=algorithm, f1_name=f1_name, f2_name=f2_name)
-    evaluation_model.PerceptronPlot(feature1=norm_feature_1_train, feature2=norm_feature_2_train, weights=model_weights, labels=encoded_class_train)
+    evaluation_model.plot_decision_boundary(feature1=norm_feature_1_train, feature2=norm_feature_2_train, weights=model_weights, labels=encoded_class_train)
     evaluation_model.confusion_matrix()
