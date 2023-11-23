@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib as pl
 from Preprocessing import prepare
+import random
 
 
 
@@ -28,6 +29,8 @@ w3 = [[0.9, 0.2], [0.1, 0.3]]
 weights.append(w1)
 weights.append(w2)
 weights.append(w3)
+print(f'all weights : {weights}')
+print('-'*50)
 layers = 3
 
 
@@ -38,7 +41,7 @@ def Forward1(input, weights, layerNum):
     index = 3 - layerNum
     neurons = []
     for r in weights[index]:
-        a = 0.5
+        a = 0
         for w, x in zip(r, input):
             a += w * x
 
@@ -59,5 +62,26 @@ for label, lst in labeled.items():
 
 x_train_processed, y_train_processed, x_test_processed, y_test_processed = prepare('Sigmoid')
 
+print(type(x_train_processed))
+print(len(x_train_processed))
+for row in x_train_processed:
+    print(row)
 
+
+def generateWeights(number_hidden, neurons_of_each_layer):
+    input_size = 5
+    AllWeights = []
+    for number_neuron in neurons_of_each_layer:
+        row_list = []
+        for sublist in range(number_neuron):
+            lst = [random.random() for _ in range(input_size)]
+            rounded_lst = [round(num, 3) for num in lst]
+            row_list.append(rounded_lst)
+        input_size = number_neuron
+
+        AllWeights.append(row_list)
+    return AllWeights
+
+w = generateWeights(4,[2, 4, 3, 2])
+print(w)
 
