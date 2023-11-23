@@ -86,9 +86,9 @@ def prepare(activation_function):
     data, target_class = split_and_class(dataset)
     x_train, x_test, y_train, y_test = train_test_split(data, target_class, test_size=0.3, stratify=target_class,
                                                         random_state=22)
-    preprocessing_training(x_train, y_train, activation_function)
-    preprocessing_testing(x_test, y_test)
-
+    x_train_processed, y_train_processed = preprocessing_training(x_train, y_train, activation_function)
+    x_test_processed, y_test_processed = preprocessing_testing(x_test, y_test)
+    return x_train_processed, y_train_processed, x_test_processed, y_test_processed
 
 activation = 'Sigmoid'
 prepare(activation)
