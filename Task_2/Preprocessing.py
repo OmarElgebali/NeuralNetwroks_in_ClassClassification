@@ -9,7 +9,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import MinMaxScaler
 
 label_encode_model = LabelEncoder()
-
+mean=0
 
 def split_and_class(croppedData):
     data = croppedData.iloc[:, :5]
@@ -63,7 +63,7 @@ def fillEmpty(feature):
     return features
 
 
-def preprocessing_training(algo, feature_1_train, feature_2_train, trainClass):
+def preprocessing_training_old(algo, feature_1_train, feature_2_train, trainClass):
     fillF1 = fillEmpty(feature_1_train)
     fillF2 = fillEmpty(feature_2_train)
     encoded_model = EncoderFitter(trainClass)
@@ -75,7 +75,7 @@ def preprocessing_training(algo, feature_1_train, feature_2_train, trainClass):
     return encoded_model, norm_model_f1, norm_model_f2, encoded_target, normed_feature_1_train, normed_feature_2_train
 
 
-def preprocessing_test(algo, testf1, testf2, testclass, norm1, norm2, encoder):
+def preprocessing_test_old(algo, testf1, testf2, testclass, norm1, norm2, encoder):
     classEncode = encoder_transform(algo, encoder, testclass)
     fillF1 = fillEmpty(testf1)
     fillF2 = fillEmpty(testf2)
@@ -86,7 +86,9 @@ def preprocessing_test(algo, testf1, testf2, testclass, norm1, norm2, encoder):
 
 def prepare():
     dataset = pd.read_csv('Dry_Bean_Dataset.csv')
-    feature, target_class = split_and_class(dataset)
-    feature_1_train, feature_2_train, feature_1_test, feature_2_test, class_train, class_test = Preprocessing.train_test(feature, target_class, feature_1_name, feature_2_name)
-    encoder_model, scaler_f1_model, scaler_f2_model, encoded_class_train, norm_feature_1_train, norm_feature_2_train = Preprocessing.preprocessing_training(algorithm, feature_1_train, feature_2_train, class_train)
-    encoded_class_test, norm_feature_1_test, norm_feature_2_test = Preprocessing.preprocessing_test(algorithm, feature_1_test, feature_2_test, class_test, scaler_f1_model, scaler_f2_model, encoder_model)
+    data, target_class = split_and_class(dataset)
+    x_train, x_test, y_train, y_test = train_test_split(data, target_class, test_size=0.3, stratify=label, random_state=22)
+
+
+def preprocessing_training_new(x, y):
+        mean = features = feature.fillna(feature.mean())
