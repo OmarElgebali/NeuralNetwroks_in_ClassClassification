@@ -71,6 +71,7 @@ for row in x_train_processed:
 def generateWeights(number_hidden, neurons_of_each_layer):
     input_size = 5
     AllWeights = []
+    neurons_of_each_layer.append(3)
     for number_neuron in neurons_of_each_layer:
         row_list = []
         for sublist in range(number_neuron):
