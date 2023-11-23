@@ -9,7 +9,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import MinMaxScaler
 
 label_encode_model = LabelEncoder()
-mean=0
+mean = []
 
 def split_and_class(croppedData):
     data = croppedData.iloc[:, :5]
@@ -58,9 +58,6 @@ def encoder_inverse_transform(algo, target_class_point):
     return Transformed_class
 
 
-def fillEmpty(feature):
-    features = feature.fillna(feature.mean())
-    return features
 
 
 def preprocessing_training_old(algo, feature_1_train, feature_2_train, trainClass):
@@ -83,12 +80,27 @@ def preprocessing_test_old(algo, testf1, testf2, testclass, norm1, norm2, encode
     f2Transform = FeatureNormlizeTransform(norm2, fillF2)
     return classEncode, f1Transform, f2Transform
 
+def fillEmptyTrain(dataset):
+    global mean
+    mean = dataset.mean()
+    return dataset.fillna(mean)
+
+def fillEmptyTest(dataset):
+    return dataset.fillna(mean)
+
+def preprocessing_training(x, y):
+    global mean
+    mean = []
+    x_filled = fillEmptyTrain(x)
+
+def preprocessing_testing(x, y):
+    x_filled = fillEmptyTest(x)
 
 def prepare():
     dataset = pd.read_csv('Dry_Bean_Dataset.csv')
     data, target_class = split_and_class(dataset)
-    x_train, x_test, y_train, y_test = train_test_split(data, target_class, test_size=0.3, stratify=label, random_state=22)
+    x_train, x_test, y_train, y_test = train_test_split(data, target_class, test_size=0.3, stratify=target_class, random_state=22)
+    preprocessing_training(x_train,y_train)
+    preprocessing_testing(x_test,y_test)
 
-
-def preprocessing_training_new(x, y):
-        mean = features = feature.fillna(feature.mean())
+prepare()
