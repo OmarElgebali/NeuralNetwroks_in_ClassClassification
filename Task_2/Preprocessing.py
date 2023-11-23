@@ -10,6 +10,8 @@ from sklearn.preprocessing import MinMaxScaler
 
 label_encode_model = LabelEncoder()
 mean = []
+scaler_models = []
+
 
 def split_and_class(croppedData):
     data = croppedData.iloc[:, :5]
@@ -22,85 +24,71 @@ def train_test(feature, label):
     return X_train, X_test, y_train, y_test
 
 
-def FeatureNormalizingFit(algo, feature):
-    scaler = MinMaxScaler()
-    if algo == 'Perceptron':
-        scaler = MinMaxScaler(feature_range=(-1, 1))
-    normedFeature = np.array(feature).reshape(-1, 1)
-    scaler.fit(normedFeature)
-    return scaler
+def feature_normalizing_fit(dataset, activation_function):
+    global scaler_models
+    scaler_models = []
+    for column in dataset.columns:
+        scaler_obj = MinMaxScaler() if activation_function == 'Sigmoid' else MinMaxScaler(feature_range=(-1, 1))
+        scaler_obj.fit(dataset[[column]])
+        scaler_models.append(scaler_obj)
 
 
-def FeatureNormlizeTransform(fitted, feature):
-    normedFeatures = np.array(feature).reshape(-1, 1)
-    transform_feature = fitted.transform(normedFeatures)
-    return transform_feature
+def feature_normalize_transform(dataset):
+    for index, column in enumerate(dataset.columns):
+        dataset[[column]] = scaler_models[index].transform(dataset[[column]])
+    return dataset
 
 
-def EncoderFitter(target_class_train):
+def encoder_fit(target_class_train):
     global label_encode_model
     label_encode_model = LabelEncoder()
     label_encode_model.fit(target_class_train)
-    return label_encode_model
 
 
-def encoder_transform(algo, fitModel, target_class_array):
-    Transformed_class = fitModel.transform(target_class_array.to_numpy())
-    if algo == 'Perceptron':
-        Transformed_class = [i if i != 0 else -1 for i in Transformed_class]
-    return Transformed_class
+def encoder_transform(target_class_array):
+    return label_encode_model.transform(target_class_array.to_numpy())
 
 
-def encoder_inverse_transform(algo, target_class_point):
-    if algo == 'Perceptron':
-        target_class_point = target_class_point if target_class_point == 1 else 0
-    Transformed_class = label_encode_model.inverse_transform([target_class_point])[0]
-    return Transformed_class
+def encoder_inverse_transform(target_class_point):
+    return label_encode_model.inverse_transform(target_class_point)
 
-
-
-
-def preprocessing_training_old(algo, feature_1_train, feature_2_train, trainClass):
-    fillF1 = fillEmpty(feature_1_train)
-    fillF2 = fillEmpty(feature_2_train)
-    encoded_model = EncoderFitter(trainClass)
-    encoded_target = encoder_transform(algo, encoded_model, trainClass)
-    norm_model_f1 = FeatureNormalizingFit(algo, fillF1)
-    norm_model_f2 = FeatureNormalizingFit(algo, fillF2)
-    normed_feature_1_train = FeatureNormlizeTransform(norm_model_f1, fillF1)
-    normed_feature_2_train = FeatureNormlizeTransform(norm_model_f2, fillF2)
-    return encoded_model, norm_model_f1, norm_model_f2, encoded_target, normed_feature_1_train, normed_feature_2_train
-
-
-def preprocessing_test_old(algo, testf1, testf2, testclass, norm1, norm2, encoder):
-    classEncode = encoder_transform(algo, encoder, testclass)
-    fillF1 = fillEmpty(testf1)
-    fillF2 = fillEmpty(testf2)
-    f1Transform = FeatureNormlizeTransform(norm1, fillF1)
-    f2Transform = FeatureNormlizeTransform(norm2, fillF2)
-    return classEncode, f1Transform, f2Transform
 
 def fillEmptyTrain(dataset):
     global mean
     mean = dataset.mean()
     return dataset.fillna(mean)
 
+
 def fillEmptyTest(dataset):
     return dataset.fillna(mean)
 
-def preprocessing_training(x, y):
+
+def preprocessing_training(x, y, activation_function):
     global mean
     mean = []
     x_filled = fillEmptyTrain(x)
+    feature_normalizing_fit(x_filled, activation_function)
+    normalized_x = feature_normalize_transform(x_filled)
+    encoder_fit(y)
+    encoded_target = encoder_transform(y)
+    return normalized_x, encoded_target
+
 
 def preprocessing_testing(x, y):
     x_filled = fillEmptyTest(x)
+    normalized_x = feature_normalize_transform(x_filled)
+    encoded_target = encoder_transform(y)
+    return normalized_x, encoded_target
 
-def prepare():
+
+def prepare(activation_function):
     dataset = pd.read_csv('Dry_Bean_Dataset.csv')
     data, target_class = split_and_class(dataset)
-    x_train, x_test, y_train, y_test = train_test_split(data, target_class, test_size=0.3, stratify=target_class, random_state=22)
-    preprocessing_training(x_train,y_train)
-    preprocessing_testing(x_test,y_test)
+    x_train, x_test, y_train, y_test = train_test_split(data, target_class, test_size=0.3, stratify=target_class,
+                                                        random_state=22)
+    preprocessing_training(x_train, y_train, activation_function)
+    preprocessing_testing(x_test, y_test)
 
-prepare()
+
+activation = 'Sigmoid'
+prepare(activation)
