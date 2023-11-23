@@ -29,8 +29,20 @@ weights.append(w1)
 weights.append(w2)
 weights.append(w3)
 layers = 3
-
-
+www = [
+    [
+        [0.1, 0.3],
+        [0.2, 0.4]
+    ],
+    [
+        [0.5, 0.7],
+        [0.6, 0.8]
+    ],
+    [
+        [0.9, 0.2],
+        [0.1, 0.3]
+    ]
+]
 def Forward1(input, weights, layerNum):
     if layerNum == 0:
         return
@@ -49,15 +61,17 @@ def Forward1(input, weights, layerNum):
     Forward1(neurons, weights, layerNum - 1)
 
 
-Forward1(i, weights, 3)
-num, labeled = label_lists(allY)
 
-print(f'Number of lists: {num}')
-for label, lst in labeled.items():
-    print(f'{label}: {lst}')
+def feed_forward():
+    Forward1(i, weights, 3)
+    num, labeled = label_lists(allY)
+
+    print(f'Number of lists: {num}')
+    for label, lst in labeled.items():
+        print(f'{label}: {lst}')
 
 
-x_train_processed, y_train_processed, x_test_processed, y_test_processed = prepare('Sigmoid')
+# x_train_processed, y_train_processed, x_test_processed, y_test_processed = prepare('Sigmoid')
 
 
 
