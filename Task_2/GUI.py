@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 
-# import Core
+import Core
+
 activation_functions = {1: 'Sigmoid', 2: 'Hyper-Tangent'}
 
 
@@ -14,12 +15,8 @@ def start_fitting(activation_function, epochs, eta, bias, num_layers, num_neuron
     :param num_layers: integer
     :param num_neurons_in_each_layer: [#neurons]
     """
-    print(activation_function)
-    print(epochs)
-    print(eta)
-    print(bias)
-    print(num_layers)
-    print(num_neurons_in_each_layer)
+    Core.preprocessing(activation_function)
+    Core.fit(activation_function, epochs, eta, bias, num_layers, num_neurons_in_each_layer)
     # pass
 
 

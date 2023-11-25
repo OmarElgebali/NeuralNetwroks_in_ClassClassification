@@ -89,3 +89,7 @@ def prepare(activation_function):
     x_train_processed, y_train_processed = preprocessing_training(x_train, y_train, activation_function)
     x_test_processed, y_test_processed = preprocessing_testing(x_test, y_test)
     return x_train_processed, y_train_processed, x_test_processed, y_test_processed
+
+
+def preprocessing_classification(dataset):
+    return feature_normalize_transform(fillEmptyTest(dataset))

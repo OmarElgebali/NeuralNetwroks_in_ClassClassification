@@ -1,13 +1,13 @@
 from random import random
-
-import pandas as pd
 import numpy as np
-import matplotlib as pl
-from Preprocessing import prepare
 
 
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
+
+
+def hyper_tangent(x):
+    return (1 - np.exp(-x)) / (1 + np.exp(-x))
 
 
 def label_lists(list_of_lists):
@@ -56,10 +56,10 @@ def generateWeights(neurons_of_each_layer):
 
         AllWeights.append(row_list)
     generated_weights = AllWeights
-    return AllWeights
+    # return AllWeights
 
 
-def Forward1(input, weights, layerNum):
+def Forward1(input, weights, layerNum, act_func):
     if layerNum == 0:
         return
 
@@ -70,17 +70,17 @@ def Forward1(input, weights, layerNum):
         for w, x in zip(r, input):
             a += w * x
 
-        sigma = sigmoid(a)
+        sigma = sigmoid(a) if act_func == 'Sigmoid' else hyper_tangent(a)
         neurons.append(sigma)
         # print(activation)
     allY.append(neurons)
     Forward1(neurons, weights, layerNum - 1)
 
 
-def feed_forward(inputs, num_of_layers):
+def feed_forward(inputs, num_of_layers, act_func):
     global layers
     layers = num_of_layers
-    Forward1(inputs, generated_weights, layers)
+    Forward1(inputs, generated_weights, layers, act_func)
     num, labeled = label_lists(allY)
 
     print(f'Number of lists (Y): {num}')
