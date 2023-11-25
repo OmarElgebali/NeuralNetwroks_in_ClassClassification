@@ -11,7 +11,7 @@ from sklearn.preprocessing import MinMaxScaler
 label_encode_model = LabelEncoder()
 mean = []
 scaler_models = []
-
+model_bias = -1
 
 def split_and_class(croppedData):
     data = croppedData.iloc[:, :5]
@@ -81,15 +81,21 @@ def preprocessing_testing(x, y):
     return normalized_x, encoded_target
 
 
-def prepare(activation_function):
+def prepare(activation_function, is_bias):
+    global model_bias
     dataset = pd.read_csv('Dry_Bean_Dataset.csv')
     data, target_class = split_and_class(dataset)
     x_train, x_test, y_train, y_test = train_test_split(data, target_class, test_size=0.3, stratify=target_class,
                                                         random_state=22)
     x_train_processed, y_train_processed = preprocessing_training(x_train, y_train, activation_function)
     x_test_processed, y_test_processed = preprocessing_testing(x_test, y_test)
+    model_bias = is_bias
+    x_train_processed.insert(0, 'Bias', model_bias)
+    print(x_train_processed)
+    x_test_processed.insert(0, 'Bias', model_bias)
+    print(x_train)
     return x_train_processed, y_train_processed, x_test_processed, y_test_processed
 
 
 def preprocessing_classification(dataset):
-    return feature_normalize_transform(fillEmptyTest(dataset))
+    return feature_normalize_transform(fillEmptyTest(dataset)).insert(0, 'Bias', model_bias)

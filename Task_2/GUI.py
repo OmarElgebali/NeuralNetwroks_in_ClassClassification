@@ -15,8 +15,9 @@ def start_fitting(activation_function, epochs, eta, bias, num_layers, num_neuron
     :param num_layers: integer
     :param num_neurons_in_each_layer: [#neurons]
     """
-    Core.preprocessing(activation_function)
-    Core.fit(activation_function, epochs, eta, bias, num_layers, num_neurons_in_each_layer)
+    print()
+    Core.preprocessing(activation_function, bias)
+    # Core.fit(activation_function, epochs, eta, bias, num_layers, num_neurons_in_each_layer)
     # pass
 
 
