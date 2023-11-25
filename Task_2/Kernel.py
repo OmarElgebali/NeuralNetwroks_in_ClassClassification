@@ -30,7 +30,7 @@ allY = []
 # weights.append(w3)
 layers = 0
 
-weights = [
+generated_weights = [
     [
         [-0.3, 0.21, 0.15],
         [0.25, -0.4, 0.1]
@@ -42,7 +42,7 @@ weights = [
 
 
 def generateWeights(neurons_of_each_layer):
-    global layers
+    global layers, generated_weights
     layers = len(neurons_of_each_layer)
     input_size = 5
     AllWeights = []
@@ -55,6 +55,7 @@ def generateWeights(neurons_of_each_layer):
         input_size = number_neuron
 
         AllWeights.append(row_list)
+    generated_weights = AllWeights
     return AllWeights
 
 
@@ -79,22 +80,24 @@ def Forward1(input, weights, layerNum):
 def feed_forward(inputs, num_of_layers):
     global layers
     layers = num_of_layers
-    Forward1(inputs, weights, layers)
+    Forward1(inputs, generated_weights, layers)
     num, labeled = label_lists(allY)
 
     print(f'Number of lists (Y): {num}')
     for label, lst in labeled.items():
         print(f'Y-{label}: {lst}')
-    return allY, weights
+    return allY, generated_weights
 
 
 def back_propagation(outputs, actual, weights):
     sigmas = []
     sigma_y = []
+
     # Output Layer
     for i, y in enumerate(outputs[-1]):
         sigma_y.append((actual[i] - y) * y * (1 - y))
     sigmas.insert(0, sigma_y)
+
     # Hidden Layers
     for layer in reversed(range(len(outputs) - 1)):
         current_sigma = []
