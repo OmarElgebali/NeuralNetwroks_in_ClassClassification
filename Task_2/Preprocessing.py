@@ -75,17 +75,17 @@ def preprocessing_training(x, y, activation_function):
     x_filled = fillEmptyTrain(x)
     feature_normalizing_fit(x_filled, activation_function)
     normalized_x = feature_normalize_transform(x_filled)
-    # encoded_target = target_encoder_model(y)
-    encoder_fit(y)
-    encoded_target = encoder_transform(y)
+    encoded_target = target_encoder_model(y)
+    # encoder_fit(y)
+    # encoded_target = encoder_transform(y)
     return normalized_x, encoded_target
 
 
 def preprocessing_testing(x, y):
     x_filled = fillEmptyTest(x)
     normalized_x = feature_normalize_transform(x_filled)
-    # encoded_target = target_encoder_model(y)
-    encoded_target = encoder_transform(y)
+    encoded_target = target_encoder_model(y)
+    # encoded_target = encoder_transform(y)
     return normalized_x, encoded_target
 
 
@@ -100,8 +100,8 @@ def prepare(activation_function, is_bias):
     model_bias = is_bias
     x_train_processed.insert(0, 'Bias', is_bias)
     x_test_processed.insert(0, 'Bias', is_bias)
-    x_train_listed = [x_train_processed.values.tolist()]
-    x_test_listed = [x_test_processed.values.tolist()]
+    x_train_listed = x_train_processed.values.tolist()
+    x_test_listed = x_test_processed.values.tolist()
     return x_train_listed, y_train_processed, x_test_listed, y_test_processed
 
 

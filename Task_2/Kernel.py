@@ -51,9 +51,7 @@ def Forward1(input, weights, layerNum, act_func):
     neurons = []
     for r in weights[index]:
         a = 0
-        print(f"Input: {input}")
         for w, x in zip(r, input):
-            print(f"({w}, {x})")
             a += w * x
 
         sigma = sigmoid(a) if act_func == 'Sigmoid' else hyper_tangent(a)
@@ -89,7 +87,7 @@ def back_propagation(outputs, actual, weights):
         for i, y in enumerate(outputs[layer]):
             summation = 0
             for j, w in enumerate(weights[layer + 1]):
-                summation += w[i + 1] * sigmas[0][j]
+                summation += w[i] * sigmas[0][j]
             current_sigma.append(y * (1 - y) * summation)
         sigmas.insert(0, current_sigma)
 
