@@ -2,6 +2,14 @@ from random import random
 import numpy as np
 
 
+def print_list_of_lists(list_of_lists, its_name):
+    num, labeled = label_lists(list_of_lists)
+    print("="*400)
+    print(f'Number of lists ({its_name}): {num}')
+    for label, lst in labeled.items():
+        print(f'{its_name} - {label}: {lst}')
+
+
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
@@ -63,21 +71,16 @@ def Forward1(input, weights, layerNum, act_func):
 
 def feed_forward(inputs, act_func):
     Forward1(inputs, generated_weights, layers, act_func)
-    num, labeled = label_lists(allY)
-
-    print(f'Number of lists (Y): {num}')
-    for label, lst in labeled.items():
-        print(f'Y-{label}: {lst}')
+    print_list_of_lists(allY, 'Ys')
     return allY, generated_weights
 
 
 def back_propagation(outputs, actual, weights):
     sigmas = []
     sigma_y = []
-    print(actual)
+
     # Output Layer
     for i, y in enumerate(outputs[-1]):
-        print(f"ACT: {actual[i]} , Y: {y}")
         sigma_y.append((actual[i] - y) * y * (1 - y))
     sigmas.insert(0, sigma_y)
 
@@ -91,10 +94,7 @@ def back_propagation(outputs, actual, weights):
             current_sigma.append(y * (1 - y) * summation)
         sigmas.insert(0, current_sigma)
 
-    num, labeled = label_lists(sigmas)
-    print(f'Number of lists (Sigma): {num}')
-    for label, lst in labeled.items():
-        print(f'Sigma - {label}: {lst}')
+    print_list_of_lists(sigmas, 'Sigma')
     return sigmas
 
 
@@ -114,8 +114,16 @@ def generateWeights(neurons_of_each_layer):
 
         AllWeights.append(row_list)
     generated_weights = AllWeights
-    num, labeled = label_lists(generated_weights)
-    print(f'Number of lists (W): {num}')
-    for label, lst in labeled.items():
-        print(f'W - {label}: {lst}')
+    print_list_of_lists(generated_weights, 'Weights')
     # return AllWeights
+
+
+def updateWeights(errors, learningRate, Xs):
+    for layer, error_list in enumerate(errors):
+        for neuron, neuron_error in enumerate(error_list):
+            for i in range(len(generated_weights[layer][neuron])):
+                generated_weights[layer][neuron][i] = (generated_weights[layer][neuron][i]
+                                                       + learningRate * neuron_error * Xs[layer][i])
+    print_list_of_lists(generated_weights, 'Weights')
+    return generated_weights
+
