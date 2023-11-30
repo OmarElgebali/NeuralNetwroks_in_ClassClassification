@@ -8,7 +8,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import MinMaxScaler
 
-label_encode_model = LabelEncoder()
 mean = []
 scaler_models = []
 model_bias = -1
@@ -106,4 +105,6 @@ def prepare(activation_function, is_bias):
 
 
 def preprocessing_classification(dataset):
-    return feature_normalize_transform(fillEmptyTest(dataset)).insert(0, 'Bias', model_bias).values.tolist()
+    normalizedDataSet = feature_normalize_transform(dataset)
+    normalizedDataSet.insert(0, 'Bias', model_bias)
+    return normalizedDataSet.values.tolist()

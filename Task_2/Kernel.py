@@ -73,7 +73,7 @@ def feed_forward(inputs, act_func):
     global allY
     allY = []
     Forward1(inputs, generated_weights, layers, act_func)
-    print_list_of_lists(allY, 'Ys')
+    # print_list_of_lists(allY, 'Ys')
     return allY, generated_weights
 
 
@@ -96,7 +96,7 @@ def back_propagation(outputs, actual, weights):
             current_sigma.append(y * (1 - y) * summation)
         sigmas.insert(0, current_sigma)
 
-    print_list_of_lists(sigmas, 'Sigma')
+    # print_list_of_lists(sigmas, 'Sigma')
     return sigmas
 
 
@@ -116,7 +116,7 @@ def generateWeights(neurons_of_each_layer):
 
         AllWeights.append(row_list)
     generated_weights = AllWeights
-    print_list_of_lists(generated_weights, 'Weights')
+    # print_list_of_lists(generated_weights, 'Weights')
     # return AllWeights
 
 
@@ -126,6 +126,6 @@ def updateWeights(errors, learningRate, Xs):
             for i in range(len(generated_weights[layer][neuron])):
                 generated_weights[layer][neuron][i] = (generated_weights[layer][neuron][i]
                                                        + learningRate * neuron_error * Xs[layer][i])
-    print_list_of_lists(generated_weights, 'Weights')
+    # print_list_of_lists(generated_weights, 'Weights')
     return generated_weights
 
