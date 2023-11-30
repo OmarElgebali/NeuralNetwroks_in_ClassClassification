@@ -11,6 +11,8 @@ from sklearn.preprocessing import MinMaxScaler
 label_encode_model = LabelEncoder()
 mean = []
 scaler_models = []
+model_bias = -1
+class_values = ['BOMBAY', 'CALI', 'SIRA']
 
 
 def split_and_class(croppedData):
@@ -49,8 +51,12 @@ def encoder_transform(target_class_array):
     return label_encode_model.transform(target_class_array.to_numpy())
 
 
-def encoder_inverse_transform(target_class_point):
-    return label_encode_model.inverse_transform(target_class_point)
+def target_encoder_model(target_values):
+    return [[1 if value == target_value else 0 for value in class_values] for target_value in target_values]
+
+
+def inverse_target_encoder(target_class_points):
+    return [class_values[index.index(1)] for index in target_class_points]
 
 
 def fillEmptyTrain(dataset):
@@ -69,26 +75,35 @@ def preprocessing_training(x, y, activation_function):
     x_filled = fillEmptyTrain(x)
     feature_normalizing_fit(x_filled, activation_function)
     normalized_x = feature_normalize_transform(x_filled)
-    encoder_fit(y)
-    encoded_target = encoder_transform(y)
+    encoded_target = target_encoder_model(y)
+    # encoder_fit(y)
+    # encoded_target = encoder_transform(y)
     return normalized_x, encoded_target
 
 
 def preprocessing_testing(x, y):
     x_filled = fillEmptyTest(x)
     normalized_x = feature_normalize_transform(x_filled)
-    encoded_target = encoder_transform(y)
+    encoded_target = target_encoder_model(y)
+    # encoded_target = encoder_transform(y)
     return normalized_x, encoded_target
 
 
-def prepare(activation_function):
+def prepare(activation_function, is_bias):
+    global model_bias
     dataset = pd.read_csv('Dry_Bean_Dataset.csv')
     data, target_class = split_and_class(dataset)
     x_train, x_test, y_train, y_test = train_test_split(data, target_class, test_size=0.3, stratify=target_class,
                                                         random_state=22)
     x_train_processed, y_train_processed = preprocessing_training(x_train, y_train, activation_function)
     x_test_processed, y_test_processed = preprocessing_testing(x_test, y_test)
-    return x_train_processed, y_train_processed, x_test_processed, y_test_processed
+    model_bias = is_bias
+    x_train_processed.insert(0, 'Bias', is_bias)
+    x_test_processed.insert(0, 'Bias', is_bias)
+    x_train_listed = x_train_processed.values.tolist()
+    x_test_listed = x_test_processed.values.tolist()
+    return x_train_listed, y_train_processed, x_test_listed, y_test_processed
 
-activation = 'Sigmoid'
-prepare(activation)
+
+def preprocessing_classification(dataset):
+    return feature_normalize_transform(fillEmptyTest(dataset)).insert(0, 'Bias', model_bias)
