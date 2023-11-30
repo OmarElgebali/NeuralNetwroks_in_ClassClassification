@@ -106,4 +106,6 @@ def prepare(activation_function, is_bias):
 
 
 def preprocessing_classification(dataset):
-    return feature_normalize_transform(fillEmptyTest(dataset)).insert(0, 'Bias', model_bias)
+    normalizedDataSet = feature_normalize_transform(dataset)
+    normalizedDataSet.insert(0, 'Bias', model_bias)
+    return normalizedDataSet.values.tolist()
