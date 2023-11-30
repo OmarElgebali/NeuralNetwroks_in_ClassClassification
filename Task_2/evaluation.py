@@ -5,7 +5,7 @@ import Preprocessing
 
 
 class Evaluation:
-    def __init__(self,y_actual, y_predict):
+    def __init__(self, y_actual, y_predict):
         y_actual = np.array(y_actual)
         y_predict = np.array(y_predict)
 

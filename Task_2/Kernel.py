@@ -14,8 +14,12 @@ def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
 
+# def hyper_tangent(x):
+#     return (1 - np.exp(-x)) / (1 + np.exp(-x))
+
+
 def hyper_tangent(x):
-    return (1 - np.exp(-x)) / (1 + np.exp(-x))
+    return np.tanh(x)
 
 
 def label_lists(list_of_lists):
@@ -82,9 +86,6 @@ def feed_forward(inputs, act_func):
 def back_propagation(outputs, actual, weights):
     sigmas = []
     sigma_y = []
-    print("||"*100)
-    print("outputs[-1]",outputs[-1])
-    print("actual",actual)
 
     # Output Layer
     for i, y in enumerate(outputs[-1]):
@@ -101,7 +102,7 @@ def back_propagation(outputs, actual, weights):
             current_sigma.append(y * (1 - y) * summation)
         sigmas.insert(0, current_sigma)
 
-    print_list_of_lists(sigmas, 'Sigma')
+    # print_list_of_lists(sigmas, 'Sigma')
     return sigmas
 
 
@@ -121,7 +122,7 @@ def generateWeights(neurons_of_each_layer):
 
         AllWeights.append(row_list)
     generated_weights = AllWeights
-    print_list_of_lists(generated_weights, 'Weights')
+    # print_list_of_lists(generated_weights, 'Weights')
     # return AllWeights
 
 

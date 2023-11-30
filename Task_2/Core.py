@@ -2,6 +2,8 @@ import numpy as np
 import Kernel
 import Preprocessing
 from Kernel import feed_forward, back_propagation, generateWeights, print_list_of_lists, updateWeights
+import evaluation
+import confustion_matrix
 
 x_train = y_train = x_test = y_test = []
 
@@ -44,14 +46,14 @@ def fit(activation_function, epochs, eta, bias, layers, neurons_list):
     for xt in x_test:
         y_predict.append(predict(xt))
 
-    for x in x_test:
-        predict(x)
-
 
 y_predict = []
-preprocessing("Sigmoid", 1)
-fit("Sigmoid", 1000, 0.01, 1, 8, [3, 8, 4, 4, 6, 8, 2, 3])
+preprocessing('h', 1)
+fit('h', 5000, 0.001, 1, 1,
+    [5])
 print(y_predict)
 print(y_test)
+accu = evaluation.Evaluation(y_test, y_predict)
+confused = confustion_matrix.ConfusionMatrix(y_test, y_predict)
 
 
