@@ -70,6 +70,8 @@ def Forward1(input, weights, layerNum, act_func):
 
 
 def feed_forward(inputs, act_func):
+    global allY
+    allY = []
     Forward1(inputs, generated_weights, layers, act_func)
     print_list_of_lists(allY, 'Ys')
     return allY, generated_weights
