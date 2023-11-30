@@ -1,50 +1,51 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 # Step 2: Define actual and predicted classes in one-hot encoded format
-actual_classes = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 0, 0], [0, 1, 0], [0, 0, 1]])
-predicted_classes = np.array([[1, 0, 0], [0, 1, 0], [1, 0, 0], [0, 0, 1], [0, 1, 0], [0, 0, 1], [1, 0, 0], [0, 0, 1], [0, 0, 1]])
+# actual_classes = np.array(
+#     [[1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 0, 0], [0, 1, 0], [0, 0, 1]])
+# predicted_classes = np.array(
+#     [[1, 0, 0], [0, 1, 0], [1, 0, 0], [0, 0, 1], [0, 1, 0], [0, 0, 1], [1, 0, 0], [0, 0, 1], [0, 0, 1]])
+#
 
-# Step 3: Initialize confusion matrix
-num_classes = len(actual_classes[0])
-confusion_matrix = np.zeros((num_classes, num_classes), dtype=int)
+class ConfusionMatrix:
 
-# Step 4: Populate confusion matrix
-for actual, predicted in zip(actual_classes, predicted_classes):
-    actual_index = np.argmax(actual)
-    predicted_index = np.argmax(predicted)
-    confusion_matrix[actual_index, predicted_index] += 1
+    def __init__(self, actual_classes, predicted_classes):
+        actual_classes = np.array(actual_classes)
+        predicted_classes = np.array(predicted_classes)
+        # Step 3: Initialize confusion matrix
+        num_classes = len(actual_classes[0])
+        confusion_matrix = np.zeros((num_classes, num_classes), dtype=int)
 
-# Step 5: Plot confusion matrix
-plt.figure(figsize=(8, 6))
-plt.imshow(confusion_matrix, interpolation='nearest', cmap=plt.cm.Blues)
-plt.title('Confusion Matrix')
-plt.colorbar()
+        # Step 4: Populate confusion matrix
+        for actual, predicted in zip(actual_classes, predicted_classes):
+            actual_index = np.argmax(actual)
+            predicted_index = np.argmax(predicted)
+            confusion_matrix[actual_index, predicted_index] += 1
 
-classes = ['Class 0', 'Class 1', 'Class 2']
-tick_marks = np.arange(len(classes))
-plt.xticks(tick_marks, classes)
-plt.yticks(tick_marks, classes)
+        # Step 5: Plot confusion matrix
+        plt.figure(figsize=(8, 6))
+        plt.imshow(confusion_matrix, interpolation='nearest', cmap=plt.cm.Blues)
+        plt.title('Confusion Matrix')
+        plt.colorbar()
 
-plt.xlabel('Predicted')
-plt.ylabel('Actual')
+        classes = ['Class 0', 'Class 1', 'Class 2']
+        tick_marks = np.arange(len(classes))
+        plt.xticks(tick_marks, classes)
+        plt.yticks(tick_marks, classes)
 
-for i in range(len(classes)):
-    for j in range(len(classes)):
-        plt.text(j, i, str(confusion_matrix[i, j]), ha='center', va='center')
+        plt.xlabel('Predicted')
+        plt.ylabel('Actual')
 
-plt.show()
+        for i in range(len(classes)):
+            for j in range(len(classes)):
+                plt.text(j, i, str(confusion_matrix[i, j]), ha='center', va='center')
+
+        plt.show()
 
 
 
-# def convert_to_binary_target(prob_list):
-#     maxProbability = (np.max(prob_list))
-#     outputList = []
-#     for yHat in prob_list:
-#         if yHat == maxProbability:
-#             outputList.append(1)
-#         else:
-#             outputList.append(0)
-#     return outputList
+
 
 

@@ -30,6 +30,9 @@ def fit(activation_function, epochs, eta, bias, layers, neurons_list):
             updatedWeights = updateWeights(error_signal, eta, network_xs)
             finalWeights = updatedWeights
 
+    for x in x_test:
+        predict(x)
+
 
 # Xs = [[]]
 # Ws=[[[]]]
