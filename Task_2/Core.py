@@ -1,5 +1,5 @@
 import Preprocessing
-from Kernel import feed_forward, back_propagation, generateWeights, print_list_of_lists, updateWeights
+from Kernel import feed_forward, back_propagation, generateWeights, print_list_of_lists, updateWeights, generated_weights
 
 x_train = y_train = x_test = y_test = []
 
