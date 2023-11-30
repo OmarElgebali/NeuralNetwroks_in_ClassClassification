@@ -1,4 +1,4 @@
-from random import random
+import random
 import numpy as np
 
 
@@ -11,11 +11,18 @@ def print_list_of_lists(list_of_lists, its_name):
 
 
 def sigmoid(x):
+    # print(x)
     return 1 / (1 + np.exp(-x))
 
 
+# def hyper_tangent(x):
+#     print(x)
+#     return (1 - np.exp(-x)) / (1 + np.exp(-x))
+#
+#
 def hyper_tangent(x):
-    return (1 - np.exp(-x)) / (1 + np.exp(-x))
+    # print(x)
+    return np.tanh(x)
 
 
 def label_lists(list_of_lists):
@@ -58,8 +65,6 @@ def Forward1(input, weights, layerNum, act_func):
     index = layers - layerNum
     neurons = []
     for r in weights[index]:
-        print(f"weights: {r}")
-        print(f"Input:   {input}")
         a = 0
         for w, x in zip(r, input):
             a += w * x
@@ -111,7 +116,7 @@ def generateWeights(neurons_of_each_layer):
     for number_neuron in neurons_of_each_layer:
         row_list = []
         for sublist in range(number_neuron):
-            lst = [random() for _ in range(input_size)]
+            lst = [random.random() for _ in range(input_size)]
             rounded_lst = [round(num, 3) for num in lst]
             row_list.append(rounded_lst)
         input_size = number_neuron
