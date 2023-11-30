@@ -45,10 +45,9 @@ def convert_to_binary_target(prob_list):
 
 
 def predict(xs):
-    ys_predicts, _ = Kernel.feed_forward(xs, model_activation_function)
+    xs_preprocessed = Preprocessing.preprocessing_classification(xs)[0]
+    ys_predicts, _ = Kernel.feed_forward(xs_preprocessed, model_activation_function)
     Kernel.print_list_of_lists(ys_predicts, "Predict")
-    y_predict = ys_predicts[0][-1]
+    y_predict = ys_predicts[-1]
     outputList = convert_to_binary_target(y_predict)
-    print("outputList", outputList)
-    labels = Preprocessing.inverse_target_encoder([outputList])[0]
-    print("Target: ", labels)
+    return outputList

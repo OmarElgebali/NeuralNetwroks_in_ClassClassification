@@ -58,6 +58,8 @@ def Forward1(input, weights, layerNum, act_func):
     index = layers - layerNum
     neurons = []
     for r in weights[index]:
+        print(f"weights: {r}")
+        print(f"Input:   {input}")
         a = 0
         for w, x in zip(r, input):
             a += w * x

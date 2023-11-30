@@ -4,9 +4,10 @@ from tkinter import messagebox
 import pandas as pd
 
 import Core
+import Preprocessing
 
 activation_functions = {1: 'Sigmoid', 2: 'Hyper-Tangent'}
-features_names = ["Area", "Perimeter", "MajorAxisLength", "MinorAxisLength", "Roundness"]
+features_names = ["Area", "Perimeter", "MajorAxisLength", "MinorAxisLength", "roundnes"]
 
 
 def start_fitting(activation_function, epochs, eta, bias, num_layers, num_neurons_in_each_layer):
@@ -130,8 +131,11 @@ def start_predicting():
                                  message=f"Number of Neurons in layer #{index + 1} must be +ve number")
             return
     print(pd.DataFrame([each_feature_value], columns=features_names))
-    # pred_output = Core.predict(pd.DataFrame([each_feature_value], columns=features_names))
-    # lbl_predict_output_value.config(text=f"{pred_output}")
+    predict_output = Core.predict(pd.DataFrame([each_feature_value], columns=features_names))
+    print("predict_output", predict_output)
+    predict_result = Preprocessing.inverse_target_encoder([predict_output])[0]
+    print("predict_result", predict_result)
+    lbl_predict_output_value.config(text=f"{predict_result}")
 
 
 def predict_window():
@@ -154,10 +158,11 @@ def predict_window():
         txt_predict[-1].grid(row=index, column=1, sticky=tk.W + tk.E)
     lbl_predict_output_label = tk.Label(prediction_frame, text="Class", font=('Arial', 16))
     lbl_predict_output_label.grid(row=5, column=0, sticky=tk.W + tk.E)
-    lbl_predict_output_value = tk.Label(prediction_frame, text="", font=('Arial', 16))
+    lbl_predict_output_value = tk.Label(prediction_frame, text="", font=('Helvetica', 20), fg="green")
     lbl_predict_output_value.grid(row=5, column=1, sticky=tk.W + tk.E)
     btn_predict = tk.Button(prediction_frame, text="Predict", font=('Arial', 12), command=start_predicting)
     btn_predict.grid(row=6, column=0, sticky=tk.W + tk.E)
+    prediction_frame.pack(fill='x')
 
 
 btn_fit = tk.Button(Task_1_frame, text="Fit", font=('Arial', 12), command=check_fitting)
