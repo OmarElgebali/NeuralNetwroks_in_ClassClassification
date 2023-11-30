@@ -15,9 +15,8 @@ def start_fitting(activation_function, epochs, eta, bias, num_layers, num_neuron
     :param num_layers: integer
     :param num_neurons_in_each_layer: [#neurons]
     """
-    print()
     Core.preprocessing(activation_function, bias)
-    # Core.fit(activation_function, epochs, eta, bias, num_layers, num_neurons_in_each_layer)
+    Core.fit(activation_function, epochs, eta, bias, num_layers, num_neurons_in_each_layer)
     # pass
 
 
@@ -68,7 +67,6 @@ num_neurons_lbl = []
 num_neurons_txt = []
 
 
-
 def check_fitting():
     if not epochs_txt.get() or not eta_txt.get() or not num_layers_txt.get():
         messagebox.showerror(title="Error",
@@ -105,7 +103,8 @@ def check_fitting():
     for layer_index, neuron in enumerate(num_neurons_txt):
         num_neurons_in_each_layer.append(int(float(neuron.get())))
         if num_neurons_in_each_layer[-1] < 0:
-            messagebox.showerror(title="Error", message=f"Number of Neurons in layer #{layer_index+1} must be +ve number")
+            messagebox.showerror(title="Error",
+                                 message=f"Number of Neurons in layer #{layer_index + 1} must be +ve number")
             return
 
     bias = is_bias.get()
