@@ -44,6 +44,9 @@ def fit(activation_function, epochs, eta, bias, layers, neurons_list):
     for xt in x_test:
         y_predict.append(predict(xt))
 
+    for x in x_test:
+        predict(x)
+
 
 y_predict = []
 preprocessing("Sigmoid", 1)
