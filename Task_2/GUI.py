@@ -112,8 +112,38 @@ def check_fitting():
     start_fitting(activation_function, epochs, eta, bias, num_layers, num_neurons_in_each_layer)
 
 
+def predict_window():
+    popup = tk.Toplevel()
+    popup.title("Prediction Window")
+    modification_frame = tk.Frame(popup)
+    modification_frame.columnconfigure(0, weight=1)
+    modification_frame.columnconfigure(1, weight=1)
+    lbl_x1 = tk.Label(modification_frame, text="Area", font=('Arial', 16))
+    lbl_x1.grid(row=0, column=0, sticky=tk.W + tk.E)
+    txt_x1 = tk.Entry(modification_frame)
+    txt_x1.grid(row=0, column=1, sticky=tk.W + tk.E)
+    lbl_x2 = tk.Label(modification_frame, text="Amplitude (A)", font=('Arial', 16))
+    lbl_x2.grid(row=1, column=0, sticky=tk.W + tk.E)
+    txt_x2 = tk.Entry(modification_frame)
+    txt_x2.grid(row=1, column=1, sticky=tk.W + tk.E)
+    lbl_x3 = tk.Label(modification_frame, text="Phase Shift (Ø)", font=('Arial', 16))
+    lbl_x3.grid(row=2, column=0, sticky=tk.W + tk.E)
+    txt_x3 = tk.Entry(modification_frame)
+    txt_x3.grid(row=2, column=1, sticky=tk.W + tk.E)
+    lbl_x3 = tk.Label(modification_frame, text="Phase Shift (Ø)", font=('Arial', 16))
+    lbl_x3.grid(row=3, column=0, sticky=tk.W + tk.E)
+    txt_x3 = tk.Entry(modification_frame)
+    txt_x3.grid(row=3, column=1, sticky=tk.W + tk.E)
+    lbl_x3 = tk.Label(modification_frame, text="Phase Shift (Ø)", font=('Arial', 16))
+    lbl_x3.grid(row=4, column=0, sticky=tk.W + tk.E)
+    txt_x3 = tk.Entry(modification_frame)
+    txt_x3.grid(row=4, column=1, sticky=tk.W + tk.E)
+    lbl_x3 = tk.Label(modification_frame, text="Phase Shift (Ø)", font=('Arial', 16))
+    lbl_x3.grid(row=5, column=0, sticky=tk.W + tk.E)
+
+
 btn_fit = tk.Button(Task_1_frame, text="Fit", font=('Arial', 12), command=check_fitting)
-btn_predict = tk.Button(Task_1_frame, text="Predict", font=('Arial', 12))
+btn_predict = tk.Button(Task_1_frame, text="Predict", font=('Arial', 12), command=predict_window)
 
 
 def create_neuron_entries():
@@ -154,6 +184,7 @@ create_neuron_btn.grid(row=5, column=0, columnspan=6)
 # txt_pred_y = tk.Label(Task_1_frame, text="", font=('Helvetica', 20), fg="green")
 # txt_pred_y.grid(row=9, column=3, sticky=tk.W + tk.E)
 
+
 def start_predicting():
     activation_index = radio_activation.get()
     if activation_index not in [1, 2]:
@@ -181,6 +212,7 @@ def start_predicting():
     # feature_2_value = float(txt_pred_x2.get())
     # pred_output = Core.predict(algorithm=algorithm, x1=feature_1_value, x2=feature_2_value, labels_encode_number=classes_encode_number)
     # txt_pred_y.config(text=f"{pred_output}")
+
 
 
 Task_1_frame.pack(fill='x')
