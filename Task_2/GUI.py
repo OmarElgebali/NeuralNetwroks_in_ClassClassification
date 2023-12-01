@@ -131,7 +131,7 @@ def start_predicting():
                                  message=f"Number of Neurons in layer #{index + 1} must be +ve number")
             return
     print(pd.DataFrame([each_feature_value], columns=features_names))
-    predict_output = Core.predict(pd.DataFrame([each_feature_value], columns=features_names))
+    predict_output = Core.classify(pd.DataFrame([each_feature_value], columns=features_names))
     print("predict_output", predict_output)
     predict_result = Preprocessing.inverse_target_encoder([predict_output])[0]
     print("predict_result", predict_result)

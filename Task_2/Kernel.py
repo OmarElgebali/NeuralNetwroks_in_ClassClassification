@@ -15,14 +15,14 @@ def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
 
-# def hyper_tangent(x):
-#     print(x)
-#     return (1 - np.exp(-x)) / (1 + np.exp(-x))
-#
-#
 def hyper_tangent(x):
     # print(x)
-    return np.tanh(x)
+    return (1 - np.exp(-x)) / (1 + np.exp(-x))
+
+
+# def hyper_tangent(x):
+#     print(x)
+#     return np.tanh(x)
 
 
 def label_lists(list_of_lists):
@@ -88,8 +88,11 @@ def back_propagation(outputs, actual, weights):
     sigmas = []
     sigma_y = []
 
+    # print(f"({outputs[-1]} , {actual})")
     # Output Layer
+    error_sum = 0
     for i, y in enumerate(outputs[-1]):
+        error_sum += (actual[i] - y) * (actual[i] - y)
         sigma_y.append((actual[i] - y) * y * (1 - y))
     sigmas.insert(0, sigma_y)
 
@@ -104,7 +107,7 @@ def back_propagation(outputs, actual, weights):
         sigmas.insert(0, current_sigma)
 
     # print_list_of_lists(sigmas, 'Sigma')
-    return sigmas
+    return sigmas, error_sum
 
 
 def generateWeights(neurons_of_each_layer):
@@ -116,7 +119,9 @@ def generateWeights(neurons_of_each_layer):
     for number_neuron in neurons_of_each_layer:
         row_list = []
         for sublist in range(number_neuron):
-            lst = [random.random() for _ in range(input_size)]
+            # lst = [random.random() * 0.1 for _ in range(input_size + 1)]
+            # row_list.append(lst)
+            lst = [random.random() for _ in range(input_size + 1)]
             rounded_lst = [round(num, 3) for num in lst]
             row_list.append(rounded_lst)
         input_size = number_neuron
