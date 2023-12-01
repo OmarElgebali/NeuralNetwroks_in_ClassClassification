@@ -129,11 +129,11 @@ def generateWeights(neurons_of_each_layer):
         row_list = []
         for sublist in range(number_neuron):
             # lst = np.random.randn(input_size + 1) * np.sqrt(1. / (input_size + 1))
-            lst = [random.random() * 0.1 for _ in range(input_size + 1)]
-            row_list.append(lst)
-            # lst = [random.random() for _ in range(input_size + 1)]
+            # lst = [random.random() * 0.1 for _ in range(input_size + 1)]
+            # row_list.append(lst)
+            lst = [random.random() for _ in range(input_size+1)]
             # rounded_lst = [round(num, 3) for num in lst]
-            # row_list.append(rounded_lst)
+            row_list.append(lst)
         input_size = number_neuron
 
         AllWeights.append(row_list)

@@ -5,7 +5,7 @@ from tkinter import *
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.preprocessing import MinMaxScaler
 
 mean = []
@@ -30,7 +30,7 @@ def feature_normalizing_fit(dataset, activation_function):
     global scaler_models
     scaler_models = []
     for column in dataset.columns:
-        scaler_obj = MinMaxScaler() if activation_function == 'Sigmoid' else MinMaxScaler(feature_range=(-1, 1))
+        scaler_obj = StandardScaler() if activation_function == 'Sigmoid' else StandardScaler()
         scaler_obj.fit(dataset[[column]])
         scaler_models.append(scaler_obj)
 
