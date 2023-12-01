@@ -13,7 +13,7 @@ def label_lists(list_of_lists):
 
 def print_list_of_lists(list_of_lists, its_name):
     num, labeled = label_lists(list_of_lists)
-    print("="*400)
+    print("=" * 400)
     print(f'Number of lists ({its_name}): {num}')
     for label, lst in labeled.items():
         print(f'{its_name} - {label}: {lst}')
@@ -24,11 +24,6 @@ def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
 
-# def hyper_tangent(x):
-#     print(x)
-#     return (1 - np.exp(-np.clip(x, -2 * 370, 2 * 370))) / (1 + np.exp(-np.clip(x, -2 * 370, 2 * 370)))
-
-#
 def hyper_tangent(x):
     # print(x)
     return np.tanh(x)
@@ -87,20 +82,13 @@ def back_propagation(outputs, actual, weights, act_func):
     sigmas = []
     sigma_y = []
     # print(f"({outputs[-1]} , {actual})")
-    """
-    outputs[-1] : [1, -1, -1] or [-1, 1, -1] or [-1, -1, 1]
-    actual      : [1, -1, -1] or [-1, 1, -1] or [-1, -1, 1]
-    [1, -1, -1]
-    [-1, 1, -1]
-    2 * -1 * 2 -> -4
-    -2 * 1 * 0 -> 0
-    
-    """
+
     # Output Layer
     error_sum = 0
     for i, y in enumerate(outputs[-1]):
         error_sum += (actual[i] - y) * (actual[i] - y)
-        current_sigma = ((actual[i] - y) * y * (1 - y)) if act_func == 'Sigmoid' else ((actual[i] - y) * (1 - y) * (1 + y))
+        current_sigma = ((actual[i] - y) * y * (1 - y)) if act_func == 'Sigmoid' else (
+                    (actual[i] - y) * (1 - y) * (1 + y))
         sigma_y.append(current_sigma)
     sigmas.insert(0, sigma_y)
 
@@ -111,7 +99,8 @@ def back_propagation(outputs, actual, weights, act_func):
             summation = 0
             for j, w in enumerate(weights[layer + 1]):
                 summation += w[i] * sigmas[0][j]
-            current_sigma_hidden = (y * (1 - y) * summation) if act_func == 'Sigmoid' else ((1 + y) * (1 - y) * summation)
+            current_sigma_hidden = (y * (1 - y) * summation) if act_func == 'Sigmoid' else (
+                        (1 + y) * (1 - y) * summation)
             current_sigma.append(current_sigma_hidden)
         sigmas.insert(0, current_sigma)
 
@@ -129,11 +118,11 @@ def generateWeights(neurons_of_each_layer):
         row_list = []
         for sublist in range(number_neuron):
             # lst = np.random.randn(input_size + 1) * np.sqrt(1. / (input_size + 1))
-            lst = [random.random() * 0.1 for _ in range(input_size + 1)]
-            row_list.append(lst)
-            # lst = [random.random() for _ in range(input_size + 1)]
-            # rounded_lst = [round(num, 3) for num in lst]
-            # row_list.append(rounded_lst)
+            # lst = [random.random() * 0.1 for _ in range(input_size + 1)]
+            lst = [random.random() for _ in range(input_size + 1)]
+            # row_list.append(lst)
+            rounded_lst = [round(num, 3) for num in lst]
+            row_list.append(rounded_lst)
         input_size = number_neuron
 
         AllWeights.append(row_list)
@@ -150,4 +139,3 @@ def updateWeights(errors, learningRate, Xs):
                                                        + learningRate * neuron_error * Xs[layer][i])
     # print_list_of_lists(generated_weights, 'Weights')
     return generated_weights
-
