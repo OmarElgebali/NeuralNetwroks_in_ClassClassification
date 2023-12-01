@@ -24,32 +24,8 @@ def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
 
-# def hyper_tangent(x):
-#     print(x)
-#     return (1 - np.exp(-np.clip(x, -2 * 370, 2 * 370))) / (1 + np.exp(-np.clip(x, -2 * 370, 2 * 370)))
-
-#
 def hyper_tangent(x):
-    # print(x)
     return np.tanh(x)
-
-
-# weights = []
-# w1 = [[0.1, 0.3], [0.2, 0.4]]
-# w2 = [[0.5, 0.7], [0.6, 0.8]]
-# w3 = [[0.9, 0.2], [0.1, 0.3]]
-# weights.append(w1)
-# weights.append(w2)
-# weights.append(w3)
-# generated_weights = [
-#     [
-#         [-0.3, 0.21, 0.15],
-#         [0.25, -0.4, 0.1]
-#     ],
-#     [
-#         [-0.4, -0.2, 0.3]
-#     ]
-# ]
 
 
 allY = []
@@ -70,7 +46,6 @@ def Forward1(input, weights, layerNum, act_func):
 
         sigma = sigmoid(a) if act_func == 'Sigmoid' else hyper_tangent(a)
         neurons.append(sigma)
-        # print(activation)
     allY.append(neurons)
     Forward1(neurons, weights, layerNum - 1, act_func)
 
@@ -86,16 +61,7 @@ def feed_forward(inputs, act_func):
 def back_propagation(outputs, actual, weights, act_func):
     sigmas = []
     sigma_y = []
-    # print(f"({outputs[-1]} , {actual})")
-    """
-    outputs[-1] : [1, -1, -1] or [-1, 1, -1] or [-1, -1, 1]
-    actual      : [1, -1, -1] or [-1, 1, -1] or [-1, -1, 1]
-    [1, -1, -1]
-    [-1, 1, -1]
-    2 * -1 * 2 -> -4
-    -2 * 1 * 0 -> 0
-    
-    """
+
     # Output Layer
     error_sum = 0
     for i, y in enumerate(outputs[-1]):
@@ -128,18 +94,13 @@ def generateWeights(neurons_of_each_layer):
     for number_neuron in neurons_of_each_layer:
         row_list = []
         for sublist in range(number_neuron):
-            # lst = np.random.randn(input_size + 1) * np.sqrt(1. / (input_size + 1))
-            # lst = [random.random() * 0.1 for _ in range(input_size + 1)]
-            # row_list.append(lst)
-            lst = [random.random() for _ in range(input_size+1)]
-            # rounded_lst = [round(num, 3) for num in lst]
+            lst = [random.random() for _ in range(input_size + 1)]
             row_list.append(lst)
         input_size = number_neuron
 
         AllWeights.append(row_list)
     generated_weights = AllWeights
     # print_list_of_lists(generated_weights, 'Weights')
-    # return AllWeights
 
 
 def updateWeights(errors, learningRate, Xs):

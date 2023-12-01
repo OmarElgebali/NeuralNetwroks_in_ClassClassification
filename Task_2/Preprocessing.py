@@ -42,8 +42,8 @@ def feature_normalize_transform(dataset):
 
 
 def target_encoder_model(target_values):
-    # return [[1 if value == target_value else (0 if model_act_func == 'Sigmoid' else -1) for value in class_values] for target_value in target_values]
-    return [[1 if value == target_value else 0 for value in class_values] for target_value in target_values]
+    return [[1 if value == target_value else (0 if model_act_func == 'Sigmoid' else -1) for value in class_values] for target_value in target_values]
+    # return [[1 if value == target_value else 0 for value in class_values] for target_value in target_values]
 
 
 def inverse_target_encoder(target_class_points):

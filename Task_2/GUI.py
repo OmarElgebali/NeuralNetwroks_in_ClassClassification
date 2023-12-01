@@ -205,7 +205,7 @@ def create_neuron_entries():
     for layer in range(int(float(num_layers_txt.get()))):
         row_counter = start_row_counter + layer + 1
         num_neurons_lbl.append(
-            tk.Label(Task_1_frame, text=f"Number of Neurons in Layer #{layer + 1}", font=('Times New Roman', 16)))
+            tk.Label(Task_1_frame, text=f"# of Neurons in Layer ({layer + 1})", font=('Times New Roman', 16)))
         num_neurons_lbl[layer].grid(row=row_counter, column=0, columnspan=3, sticky=tk.W + tk.E)
         num_neurons_txt.append(tk.Entry(Task_1_frame))
         num_neurons_txt[layer].grid(row=row_counter, column=3, columnspan=3, sticky=tk.W + tk.E)
@@ -217,7 +217,7 @@ def create_neuron_entries():
     time_label.grid(row=start_row_counter + len(num_neurons_lbl) + 2, column=5, columnspan=1, sticky=tk.W + tk.E)
 
 
-create_neuron_btn = tk.Button(Task_1_frame, text="Create Neuron Entries", command=create_neuron_entries)
+create_neuron_btn = tk.Button(Task_1_frame, text="Create Neuron Layers", command=create_neuron_entries)
 create_neuron_btn.grid(row=5, column=0, columnspan=6)
 
 Task_1_frame.pack(fill='x')
