@@ -27,7 +27,7 @@ def preprocessing(activation_function, is_bias):
 
 def convert_to_binary_target_inline(prob_list):
     maxProbability = (np.max(prob_list))
-    return [1 if prob == maxProbability else 0 for prob in prob_list]
+    return [1 if prob == maxProbability else (0 if model_activation_function == 'Sigmoid' else -1) for prob in prob_list]
 
 
 def predict(xs):
@@ -38,11 +38,11 @@ def predict(xs):
     return outputList
 
 
-def fit(epochs, eta, bias, layers, neurons_list):
+def fit(epochs, eta, bias, layers, neurons_list, progress_callback):
     Kernel.generateWeights(neurons_list)
     y_predict_t = []
     y_predict = []
-    for _ in range(epochs):
+    for epoch in range(epochs):
         y_predict_t = []
         mse = 0
         for xs, ys_act in zip(x_train, y_train):
@@ -58,6 +58,7 @@ def fit(epochs, eta, bias, layers, neurons_list):
             updatedWeights = Kernel.updateWeights(error_signal, eta, network_xs)
         mse = mse / len(x_train)
         print(f'MSE: {mse}')
+        progress_callback(epoch + 1, epochs)  # Emit progress update
     _ = evaluation.Evaluation(y_train, y_predict_t)
     _ = confustion_matrix.ConfusionMatrix(y_train, y_predict_t)
     print("="*500)

@@ -1,28 +1,16 @@
+import threading
+import time
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 
 import pandas as pd
+from tqdm import tqdm
 
 import Core
 import Preprocessing
 
 activation_functions = {1: 'Sigmoid', 2: 'Hyper-Tangent'}
 features_names = ["Area", "Perimeter", "MajorAxisLength", "MinorAxisLength", "roundnes"]
-
-
-def start_fitting(activation_function, epochs, eta, bias, num_layers, num_neurons_in_each_layer):
-    """
-    :param activation_function: 'Sigmoid', 'Hyper-Tangent'
-    :param epochs: integer
-    :param eta: float
-    :param bias: 0, 1
-    :param num_layers: integer
-    :param num_neurons_in_each_layer: [#neurons]
-    """
-    Core.preprocessing(activation_function, bias)
-    Core.fit(epochs, eta, bias, num_layers, num_neurons_in_each_layer)
-    # pass
-
 
 main = tk.Tk()
 main.title('Multi-Layer Perceptron')
@@ -34,6 +22,8 @@ Task_1_frame.columnconfigure(2, weight=1)
 Task_1_frame.columnconfigure(3, weight=1)
 Task_1_frame.columnconfigure(4, weight=1)
 Task_1_frame.columnconfigure(5, weight=1)
+progress = ttk.Progressbar(Task_1_frame, orient=tk.HORIZONTAL, mode='determinate')
+progress_label = tk.Label(Task_1_frame, text="Progress: 0.00%")
 
 activation_lbl = tk.Label(Task_1_frame, text="Activation Function", font=('Times New Roman', 16))
 activation_lbl.grid(row=0, column=0, columnspan=3, sticky=tk.W + tk.E)
@@ -70,6 +60,42 @@ start_row_counter = 5
 num_neurons_lbl = []
 num_neurons_txt = []
 
+
+def start_fitting(activation_function, epochs, eta, bias, num_layers, num_neurons_in_each_layer):
+    Core.preprocessing(activation_function, bias)
+
+    def update_progress(epoch, total_epochs):
+        progress_value = (epoch * 100) / total_epochs
+        progress['value'] = progress_value
+        progress_label.config(text=f"Progress: {progress_value:.2f}%")
+        Task_1_frame.update_idletasks()
+
+    def fit_and_track_progress():
+        Core.fit(epochs, eta, bias, num_layers, num_neurons_in_each_layer, update_progress)
+
+    # Start training in a separate thread or process
+    training_thread = threading.Thread(target=fit_and_track_progress)
+    training_thread.start()
+
+
+# def start_fitting(activation_function, epochs, eta, bias, num_layers, num_neurons_in_each_layer):
+#     """
+#     :param activation_function: 'Sigmoid', 'Hyper-Tangent'
+#     :param epochs: integer
+#     :param eta: float
+#     :param bias: 0, 1
+#     :param num_layers: integer
+#     :param num_neurons_in_each_layer: [#neurons]
+#     """
+#     Core.preprocessing(activation_function, bias)
+#     Core.fit(epochs, eta, bias, num_layers, num_neurons_in_each_layer)
+#     for epoch in tqdm(range(epochs), desc='Training Progress'):
+#         time.sleep(0.1)  # Simulate training time
+#         # Update progress bar
+#         progress['value'] = (epoch + 1) * (100 / epochs)
+#         Task_1_frame.update_idletasks()
+#     print("Training completed!")
+# pass
 
 def check_fitting():
     if not epochs_txt.get() or not eta_txt.get() or not num_layers_txt.get():
@@ -186,6 +212,8 @@ def create_neuron_entries():
 
     btn_fit.grid(row=start_row_counter + len(num_neurons_lbl) + 1, column=0, columnspan=3, sticky=tk.W + tk.E)
     btn_open_predict.grid(row=start_row_counter + len(num_neurons_lbl) + 1, column=3, columnspan=3, sticky=tk.W + tk.E)
+    progress.grid(row=start_row_counter + len(num_neurons_lbl) + 2, column=0, columnspan=5, sticky=tk.W + tk.E)
+    progress_label.grid(row=start_row_counter + len(num_neurons_lbl) + 2, column=5, columnspan=1, sticky=tk.W + tk.E)
 
 
 create_neuron_btn = tk.Button(Task_1_frame, text="Create Neuron Entries", command=create_neuron_entries)

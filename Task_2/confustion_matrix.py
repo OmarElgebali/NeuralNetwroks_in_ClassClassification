@@ -43,9 +43,3 @@ class ConfusionMatrix:
                 plt.text(j, i, str(confusion_matrix[i, j]), ha='center', va='center')
 
         plt.show()
-
-
-
-
-
-

@@ -12,7 +12,7 @@ mean = []
 scaler_models = []
 model_bias = -1
 class_values = ['BOMBAY', 'CALI', 'SIRA']
-
+model_act_func = ''
 
 def split_and_class(croppedData):
     data = croppedData.iloc[:, :5]
@@ -51,7 +51,7 @@ def encoder_transform(target_class_array):
 
 
 def target_encoder_model(target_values):
-    return [[1 if value == target_value else 0 for value in class_values] for target_value in target_values]
+    return [[1 if value == target_value else (0 if model_act_func == 'Sigmoid' else -1) for value in class_values] for target_value in target_values]
 
 
 def inverse_target_encoder(target_class_points):
@@ -69,8 +69,9 @@ def fillEmptyTest(dataset):
 
 
 def preprocessing_training(x, y, activation_function):
-    global mean
+    global mean, model_act_func
     mean = []
+    model_act_func = activation_function
     x_filled = fillEmptyTrain(x)
     feature_normalizing_fit(x_filled, activation_function)
     normalized_x = feature_normalize_transform(x_filled)

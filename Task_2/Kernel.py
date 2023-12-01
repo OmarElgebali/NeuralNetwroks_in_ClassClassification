@@ -2,6 +2,15 @@ import random
 import numpy as np
 
 
+def label_lists(list_of_lists):
+    num_of_lists = len(list_of_lists)
+    labeled_lists = {}
+    for i in range(num_of_lists):
+        label = f'Layer {i + 1}'
+        labeled_lists[label] = list_of_lists[i]
+    return num_of_lists, labeled_lists
+
+
 def print_list_of_lists(list_of_lists, its_name):
     num, labeled = label_lists(list_of_lists)
     print("="*400)
@@ -15,27 +24,16 @@ def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
 
-def hyper_tangent(x):
-    # print(x)
-    return (1 - np.exp(-x)) / (1 + np.exp(-x))
-
-
 # def hyper_tangent(x):
 #     print(x)
-#     return np.tanh(x)
+#     return (1 - np.exp(-np.clip(x, -2 * 370, 2 * 370))) / (1 + np.exp(-np.clip(x, -2 * 370, 2 * 370)))
+
+#
+def hyper_tangent(x):
+    print(x)
+    return np.tanh(x)
 
 
-def label_lists(list_of_lists):
-    num_of_lists = len(list_of_lists)
-    labeled_lists = {}
-    for i in range(num_of_lists):
-        label = f'Layer {i + 1}'
-        labeled_lists[label] = list_of_lists[i]
-
-    return num_of_lists, labeled_lists
-
-
-allY = []
 # weights = []
 # w1 = [[0.1, 0.3], [0.2, 0.4]]
 # w2 = [[0.5, 0.7], [0.6, 0.8]]
@@ -54,6 +52,7 @@ allY = []
 # ]
 
 
+allY = []
 layers = 0
 generated_weights = []
 
@@ -119,11 +118,12 @@ def generateWeights(neurons_of_each_layer):
     for number_neuron in neurons_of_each_layer:
         row_list = []
         for sublist in range(number_neuron):
+            lst = np.random.rand(input_size + 1) * np.sqrt(1. / (input_size + 1))
             # lst = [random.random() * 0.1 for _ in range(input_size + 1)]
-            # row_list.append(lst)
-            lst = [random.random() for _ in range(input_size + 1)]
-            rounded_lst = [round(num, 3) for num in lst]
-            row_list.append(rounded_lst)
+            row_list.append(lst)
+            # lst = [random.random() for _ in range(input_size + 1)]
+            # rounded_lst = [round(num, 3) for num in lst]
+            # row_list.append(rounded_lst)
         input_size = number_neuron
 
         AllWeights.append(row_list)
