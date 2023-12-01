@@ -70,4 +70,5 @@ def fit(epochs, eta, bias, layers, neurons_list, progress_callback):
 
 def classify(xs):
     xs_preprocessed = Preprocessing.preprocessing_classification(xs)[0]
-    predict(xs_preprocessed)
+    return predict(xs_preprocessed)
+

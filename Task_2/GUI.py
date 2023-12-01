@@ -24,6 +24,7 @@ Task_1_frame.columnconfigure(4, weight=1)
 Task_1_frame.columnconfigure(5, weight=1)
 progress = ttk.Progressbar(Task_1_frame, orient=tk.HORIZONTAL, mode='determinate')
 progress_label = tk.Label(Task_1_frame, text="Progress: 0.00%")
+time_label = tk.Label(Task_1_frame, text="Time: 0.00s")
 
 activation_lbl = tk.Label(Task_1_frame, text="Activation Function", font=('Times New Roman', 16))
 activation_lbl.grid(row=0, column=0, columnspan=3, sticky=tk.W + tk.E)
@@ -71,9 +72,12 @@ def start_fitting(activation_function, epochs, eta, bias, num_layers, num_neuron
         Task_1_frame.update_idletasks()
 
     def fit_and_track_progress():
+        start_time = time.time()
         Core.fit(epochs, eta, bias, num_layers, num_neurons_in_each_layer, update_progress)
+        end_time = time.time()
+        duration = end_time - start_time
+        time_label.config(text=f"Time: {duration:.2f}s")
 
-    # Start training in a separate thread or process
     training_thread = threading.Thread(target=fit_and_track_progress)
     training_thread.start()
 
@@ -152,15 +156,11 @@ def start_predicting():
     each_feature_value = []
     for index, feature_value in enumerate(txt_predict):
         each_feature_value.append(float(feature_value.get()))
-        if each_feature_value[-1] < 0:
-            messagebox.showerror(title="Error",
-                                 message=f"Number of Neurons in layer #{index + 1} must be +ve number")
-            return
     print(pd.DataFrame([each_feature_value], columns=features_names))
     predict_output = Core.classify(pd.DataFrame([each_feature_value], columns=features_names))
-    print("predict_output", predict_output)
+    print("predict_output: ", predict_output)
     predict_result = Preprocessing.inverse_target_encoder([predict_output])[0]
-    print("predict_result", predict_result)
+    print("predict_result: ", predict_result)
     lbl_predict_output_value.config(text=f"{predict_result}")
 
 
@@ -212,8 +212,9 @@ def create_neuron_entries():
 
     btn_fit.grid(row=start_row_counter + len(num_neurons_lbl) + 1, column=0, columnspan=3, sticky=tk.W + tk.E)
     btn_open_predict.grid(row=start_row_counter + len(num_neurons_lbl) + 1, column=3, columnspan=3, sticky=tk.W + tk.E)
-    progress.grid(row=start_row_counter + len(num_neurons_lbl) + 2, column=0, columnspan=5, sticky=tk.W + tk.E)
-    progress_label.grid(row=start_row_counter + len(num_neurons_lbl) + 2, column=5, columnspan=1, sticky=tk.W + tk.E)
+    progress.grid(row=start_row_counter + len(num_neurons_lbl) + 2, column=0, columnspan=4, sticky=tk.W + tk.E)
+    progress_label.grid(row=start_row_counter + len(num_neurons_lbl) + 2, column=4, columnspan=1, sticky=tk.W + tk.E)
+    time_label.grid(row=start_row_counter + len(num_neurons_lbl) + 2, column=5, columnspan=1, sticky=tk.W + tk.E)
 
 
 create_neuron_btn = tk.Button(Task_1_frame, text="Create Neuron Entries", command=create_neuron_entries)
