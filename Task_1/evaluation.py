@@ -47,8 +47,8 @@ class Evaluation:
         plt.xlabel("Predicted labels")
         plt.xticks([0, 1], ["Predicted 0", "Predicted 1"])
         plt.yticks([0, 1], ["True 0", "True 1"])
-        plt.savefig(f"Results/[{self.algorithm}][{self.f1_name}_{self.f2_name}][{self.class_0}_{self.class_1}] - Confusion Matrix.png")
-        # plt.show()
+        # plt.savefig(f"Results/[{self.algorithm}][{self.f1_name}_{self.f2_name}][{self.class_0}_{self.class_1}] - Confusion Matrix.png")
+        plt.show()
 
     def plot_decision_boundary(self, feature1, feature2, weights, labels):
         min_class = 0 if self.algorithm == 'Adaline' else -1
@@ -78,5 +78,5 @@ class Evaluation:
         plt.grid(True, linewidth=0.2, linestyle='--', alpha=0.7)
         plt.legend()
         plt.title(f"Decision Boundary of {self.algorithm} Algorithm\n with Feature 1 ({self.f1_name}) and Feature 2 ({self.f2_name}) \n for the 2 classes ({self.class_0} & {self.class_1})")
-        plt.savefig(f"Results/[{self.algorithm}][{self.f1_name}_{self.f2_name}][{self.class_0}_{self.class_1}] - Decision Boundary.png")
-        # plt.show()
+        # plt.savefig(f"Results/[{self.algorithm}][{self.f1_name}_{self.f2_name}][{self.class_0}_{self.class_1}] - Decision Boundary.png")
+        plt.show()

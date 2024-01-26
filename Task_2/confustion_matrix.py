@@ -33,4 +33,5 @@ class ConfusionMatrix:
             for j in range(len(classes)):
                 plt.text(j, i, str(confusion_matrix[i, j]), ha='center', va='center')
 
-        plt.savefig(f'conf_matrix_{activation_function}_{case}.png')
+        # plt.savefig(f'conf_matrix_{activation_function}_{case}.png')
+        plt.show()
